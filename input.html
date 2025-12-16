@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Restaurant Rater</title>
+    <style>
+        body {font-family: Arial, sans-serif; background-color: #f0f8ff; color: #333; margin: 0; padding: 20px; max-width: 800px; margin: auto;}
+        h1 {text-align: center; color: #ff6347;}
+        h2 {color: #ff6347;}
+        section {background-color: #fffacd; border: 1px solid #ddd; border-radius: 8px; padding: 15px; margin-bottom: 20px;}
+        form {display: grid; gap: 10px;}
+        label {font-weight: bold; color: #4682b4;}
+        input, select {padding: 8px; border: 1px solid #ccc; border-radius: 4px; background-color: #f5f5f5;}
+        button {background-color: #32cd32; color: white; border: none; padding: 10px; border-radius: 4px; cursor: pointer;}
+        button:hover {background-color: #228b22;}
+        ul {list-style-type: none; padding: 0;}
+        li {background-color: #ffe4b5; border: 1px solid #ddd; border-radius: 4px; padding: 10px; margin-bottom: 10px;}
+        .clear-btn {background-color: #ff4500;}
+        .clear-btn:hover {background-color: #cc3700;}
+    </style>
+</head>
+<body>
+    <h1>❤️ Our Restaurant Rater & Shortlist</h1>
+
+    <section>
+        <h2>Rate a Restaurant</h2>
+        <form id="ratingForm">
+            <label>Restaurant Name:</label>
+            <input type="text" required placeholder="e.g. Bella Italia">
+            <label>Location:</label>
+            <input type="text" required placeholder="e.g. Downtown">
+            <label>Region:</label>
+            <input type="text" required placeholder="e.g. Tuscany">
+            <label>Food (1-5):</label>
+            <select required><option value="">Select</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select>
+            <label>Environment (1-5):</label>
+            <select required><option value="">Select</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select>
+            <label>Price (1-5):</label>
+            <select required><option value="">Select</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select>
+            <button type="submit">Add Rating</button>
+        </form>
+
+        <h2>Rated Restaurants</h2>
+        <ul id="ratedList"></ul>
+    </section>
+
+    <section>
+        <h2>Shortlist a Restaurant</h2>
+        <form id="shortlistForm">
+            <label>Restaurant Name:</label>
+            <input type="text" required placeholder="e.g. Sushi Paradise">
+            <label>Location:</label>
+            <input type="text" required placeholder="e.g. East Side">
+            <label>Region:</label>
+            <input type="text" required placeholder="e.g. Kyoto">
+            <button type="submit">Add to Shortlist</button>
+        </form>
+
+        <h2>Shortlist</h2>
+        <ul id="shortlist"></ul>
+    </section>
+
+    <button class="clear-btn" onclick="clearData()">Clear All Data</button>
+
+    <script>
+        function loadData() {
+            const rated = JSON.parse(localStorage.getItem('ratedRestaurants')) || [];
+            const short = JSON.parse(localStorage.getItem('shortlist')) || [];
+            document.getElementById('ratedList').innerHTML = '';
+            rated.forEach(item => {
+                const li = document.createElement('li');
+                li.innerHTML = `<strong>${item.name}</strong> (${item.location}, ${item.region})<br>Food: ${item.food}/5 ★ Environment: ${item.environment}/5 ★ Price: ${item.price}/5`;
+                document.getElementById('ratedList').appendChild(li);
+            });
+            document.getElementById('shortlist').innerHTML = '';
+            short.forEach(item => {
+                const li = document.createElement('li');
+                li.innerHTML = `<strong>${item.name}</strong> (${item.location}, ${item.region})`;
+                document.getElementById('shortlist').appendChild(li);
+            });
+        }
+
+        document.getElementById('ratingForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const rated = JSON.parse(localStorage.getItem('ratedRestaurants')) || [];
+            rated.push({
+                name: this[0].value,
+                location: this[1].value,
+                region: this[2].value,
+                food: this[3].value,
+                environment: this[4].value,
+                price: this[5].value
+            });
+            localStorage.setItem('ratedRestaurants', JSON.stringify(rated));
+            loadData();
+            this.reset();
+        });
+
+        document.getElementById('shortlistForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const short = JSON.parse(localStorage.getItem('shortlist')) || [];
+            short.push({
+                name: this[0].value,
+                location: this[1].value,
+                region: this[2].value
+            });
+            localStorage.setItem('shortlist', JSON.stringify(short));
+            loadData();
+            this.reset();
+        });
+
+        function clearData() {
+            if (confirm('Are you sure? This will delete everything.')) {
+                localStorage.removeItem('ratedRestaurants');
+                localStorage.removeItem('shortlist');
+                loadData();
+            }
+        }
+
+        loadData();
+    </script>
+</body>
+</html>
