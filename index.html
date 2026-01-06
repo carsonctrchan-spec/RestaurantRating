@@ -455,7 +455,6 @@
     </header>
 
     <div class="container">
-        <!-- 只保留兩個統計項目 -->
         <div class="stats-bar">
             <div class="stat-card">
                 <i class="fas fa-bookmark"></i>
@@ -491,6 +490,8 @@
                             <option value="American">美式料理 (American)</option>
                             <option value="Mexican">墨西哥料理 (Mexican)</option>
                             <option value="Indian">印度料理 (Indian)</option>
+                            <option value="Cafe">咖啡廳 (Cafe)</option>
+                            <option value="Dessert">甜品 (Dessert)</option>
                             <option value="Other">其他 (Other)</option>
                         </select></div>
                         <div class="form-group"><label>地區</label><select name="region">
@@ -500,10 +501,10 @@
                         </select></div>
                         <div class="form-group"><label>地點/地址</label><input type="text" name="location" placeholder="輸入餐廳地址"></div>
                         <div class="form-group"><label>價格範圍</label><select name="price">
-                            <option value="$">$ - 經濟實惠</option>
-                            <option value="$$">$$ - 中等價位</option>
-                            <option value="$$$">$$$ - 較高價位</option>
-                            <option value="$$$$">$$$$ - 高級餐廳</option>
+                            <option value="$">HK$ - 經濟實惠</option>
+                            <option value="$$">HK$$ - 中等價位</option>
+                            <option value="$$$">HK$$$ - 較高價位</option>
+                            <option value="$$$$">HK$$$$ - 高級餐廳</option>
                         </select></div>
                         <div class="form-group"><label>推薦人</label><input type="text" name="recommended-by" placeholder="誰推薦了這家餐廳？"></div>
                         <div class="form-group"><label>優先級</label><select name="priority">
@@ -523,10 +524,32 @@
                 <div class="search-box"><i class="fas fa-search"></i><input type="text" id="search-to-try" placeholder="搜尋餐廳..." oninput="filterToTry()"></div>
                 <select class="filter-select" id="filter-cuisine-to-try" onchange="filterToTry()">
                     <option value="">所有料理類型</option>
-                    <option value="Italian">義式料理</option><option value="Japanese">日式料理</option><option value="Chinese">中式料理</option><option value="French">法式料理</option><option value="Thai">泰式料理</option><option value="Korean">韓式料理</option><option value="American">美式料理</option><option value="Mexican">墨西哥料理</option><option value="Indian">印度料理</option><option value="Other">其他</option>
+                    <option value="Italian">義式料理</option>
+                    <option value="Japanese">日式料理</option>
+                    <option value="Chinese">中式料理</option>
+                    <option value="French">法式料理</option>
+                    <option value="Thai">泰式料理</option>
+                    <option value="Korean">韓式料理</option>
+                    <option value="American">美式料理</option>
+                    <option value="Mexican">墨西哥料理</option>
+                    <option value="Indian">印度料理</option>
+                    <option value="Cafe">咖啡廳</option>
+                    <option value="Dessert">甜品</option>
+                    <option value="Other">其他</option>
+                </select>
+                <select class="filter-select" id="filter-region-to-try" onchange="filterToTry()">
+                    <option value="">所有地區</option>
+                    <option value="Kowloon">九龍</option>
+                    <option value="New Territories">新界</option>
+                    <option value="Hong Kong Island">港島</option>
                 </select>
                 <select class="filter-select" id="sort-to-try" onchange="filterToTry()">
-                    <option value="date-desc">最新加入</option><option value="date-asc">最早加入</option><option value="name-asc">名稱 A-Z</option><option value="name-desc">名稱 Z-A</option><option value="priority-high">優先級：高到低</option><option value="priority-low">優先級：低到高</option>
+                    <option value="date-desc">最新加入</option>
+                    <option value="date-asc">最早加入</option>
+                    <option value="name-asc">名稱 A-Z</option>
+                    <option value="name-desc">名稱 Z-A</option>
+                    <option value="priority-high">優先級：高到低</option>
+                    <option value="priority-low">優先級：低到高</option>
                 </select>
             </div>
 
@@ -550,6 +573,8 @@
                             <option value="American">美式料理 (American)</option>
                             <option value="Mexican">墨西哥料理 (Mexican)</option>
                             <option value="Indian">印度料理 (Indian)</option>
+                            <option value="Cafe">咖啡廳 (Cafe)</option>
+                            <option value="Dessert">甜品 (Dessert)</option>
                             <option value="Other">其他 (Other)</option>
                         </select></div>
                         <div class="form-group"><label>地區</label><select name="region">
@@ -560,12 +585,12 @@
                         <div class="form-group"><label>地點/地址</label><input type="text" name="location" placeholder="輸入餐廳地址"></div>
                         <div class="form-group"><label>造訪日期</label><input type="date" name="visit-date"></div>
                         <div class="form-group"><label>實付金額</label><select name="price-paid">
-                            <option value="Below $50">Below $50</option>
-                            <option value="$50-$100">$50-$100</option>
-                            <option value="$100-$200">$100-$200</option>
-                            <option value="$200-$400">$200-$400</option>
-                            <option value="$400-$800">$400-$800</option>
-                            <option value="Above $800">Above $800</option>
+                            <option value="Below HK$50">Below HK$50</option>
+                            <option value="HK$50-HK$100">HK$50-HK$100</option>
+                            <option value="HK$100-HK$200">HK$100-HK$200</option>
+                            <option value="HK$200-HK$400">HK$200-HK$400</option>
+                            <option value="HK$400-HK$800">HK$400-HK$800</option>
+                            <option value="Above HK$800">Above HK$800</option>
                         </select></div>
                         <div class="form-group"><label>是否會再次光臨？</label><select name="would-return">
                             <option value="definitely">絕對會 (Definitely)</option>
@@ -591,10 +616,32 @@
                 <div class="search-box"><i class="fas fa-search"></i><input type="text" id="search-rating" placeholder="搜尋餐廳..." oninput="filterRatings()"></div>
                 <select class="filter-select" id="filter-cuisine-rating" onchange="filterRatings()">
                     <option value="">所有料理類型</option>
-                    <option value="Italian">義式料理</option><option value="Japanese">日式料理</option><option value="Chinese">中式料理</option><option value="French">法式料理</option><option value="Thai">泰式料理</option><option value="Korean">韓式料理</option><option value="American">美式料理</option><option value="Mexican">墨西哥料理</option><option value="Indian">印度料理</option><option value="Other">其他</option>
+                    <option value="Italian">義式料理</option>
+                    <option value="Japanese">日式料理</option>
+                    <option value="Chinese">中式料理</option>
+                    <option value="French">法式料理</option>
+                    <option value="Thai">泰式料理</option>
+                    <option value="Korean">韓式料理</option>
+                    <option value="American">美式料理</option>
+                    <option value="Mexican">墨西哥料理</option>
+                    <option value="Indian">印度料理</option>
+                    <option value="Cafe">咖啡廳</option>
+                    <option value="Dessert">甜品</option>
+                    <option value="Other">其他</option>
+                </select>
+                <select class="filter-select" id="filter-region-rating" onchange="filterRatings()">
+                    <option value="">所有地區</option>
+                    <option value="Kowloon">九龍</option>
+                    <option value="New Territories">新界</option>
+                    <option value="Hong Kong Island">港島</option>
                 </select>
                 <select class="filter-select" id="sort-rating" onchange="filterRatings()">
-                    <option value="date-desc">最新造訪</option><option value="date-asc">最早造訪</option><option value="rating-high">評分：高到低</option><option value="rating-low">評分：低到高</option><option value="name-asc">名稱 A-Z</option><option value="name-desc">名稱 Z-A</option>
+                    <option value="date-desc">最新造訪</option>
+                    <option value="date-asc">最早造訪</option>
+                    <option value="rating-high">評分：高到低</option>
+                    <option value="rating-low">評分：低到高</option>
+                    <option value="name-asc">名稱 A-Z</option>
+                    <option value="name-desc">名稱 Z-A</option>
                 </select>
             </div>
 
@@ -625,13 +672,14 @@
     <script>
         // ==================== 請填入你的 Firebase 設定 ====================
         const firebaseConfig = {
-          apiKey: "YOUR_API_KEY_HERE",
-          authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-          projectId: "YOUR_PROJECT_ID",
-          storageBucket: "YOUR_PROJECT_ID.appspot.com",
-          messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-          appId: "YOUR_APP_ID"
-        };
+  apiKey: "AIzaSyBey2Q0-XbfaGoL9sB8zYLtDlVZchvT8pQ",
+  authDomain: "restaurant-3bc1b.firebaseapp.com",
+  projectId: "restaurant-3bc1b",
+  storageBucket: "restaurant-3bc1b.firebasestorage.app",
+  messagingSenderId: "713315038698",
+  appId: "1:713315038698:web:906be6f660642c6eeb2e93",
+  measurementId: "G-HSKWB92ZV6"
+};
 
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
@@ -754,11 +802,13 @@
             const container = document.getElementById('to-try-list');
             const search = document.getElementById('search-to-try').value.toLowerCase();
             const cuisine = document.getElementById('filter-cuisine-to-try').value;
+            const region = document.getElementById('filter-region-to-try').value;
             const sort = document.getElementById('sort-to-try').value;
 
             let list = toTryRestaurants.filter(r => 
                 (r.name.toLowerCase().includes(search) || (r.location?.toLowerCase().includes(search))) &&
-                (!cuisine || r.cuisine === cuisine)
+                (!cuisine || r.cuisine === cuisine) &&
+                (!region || r.region === region)
             );
 
             list.sort((a,b) => {
@@ -802,11 +852,13 @@
             const container = document.getElementById('rating-list');
             const search = document.getElementById('search-rating').value.toLowerCase();
             const cuisine = document.getElementById('filter-cuisine-rating').value;
+            const region = document.getElementById('filter-region-rating').value;
             const sort = document.getElementById('sort-rating').value;
 
             let list = ratedRestaurants.filter(r => 
                 (r.name.toLowerCase().includes(search) || (r.location?.toLowerCase().includes(search))) &&
-                (!cuisine || r.cuisine === cuisine)
+                (!cuisine || r.cuisine === cuisine) &&
+                (!region || r.region === region)
             );
 
             list.sort((a,b) => {
@@ -913,6 +965,8 @@
                     <span class="rating-value">${r.overallRating}.0 / 5.0</span>
                 </div>
                 <p><strong>地區：</strong>${r.region === 'Kowloon' ? '九龍' : r.region === 'New Territories' ? '新界' : '港島'}</p>
+                ${r.location ? `<p><strong>地址：</strong>${r.location}</p>` : ''}
+                <p><strong>實付：</strong>${r.pricePaid}</p>
                 ${r.review ? `<p style="white-space:pre-wrap;margin-top:20px;"><strong>整體評價：</strong><br>${r.review}</p>` : ''}
                 ${r.dishes ? `<p style="margin-top:20px;"><strong>點餐內容：</strong><br>${r.dishes}</p>` : ''}
             `;
