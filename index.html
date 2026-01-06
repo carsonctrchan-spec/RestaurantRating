@@ -169,6 +169,10 @@
             background: var(--cream);
             color: var(--text);
         }
+        .form-group input::placeholder,
+        .form-group textarea::placeholder {
+            color: #aaa;
+        }
         .form-group input:focus,
         .form-group select:focus,
         .form-group textarea:focus {
@@ -286,6 +290,7 @@
         .badge-priority.high { background: rgba(231, 76, 60, 0.2); color: var(--red); }
         .badge-priority.medium { background: rgba(255, 160, 122, 0.3); color: var(--orange); }
         .badge-priority.low { background: rgba(46, 204, 113, 0.2); color: var(--green); }
+        .badge-region { background: rgba(52, 152, 219, 0.2); color: #2980b9; }
         .card-info p {
             margin: 8px 0;
             display: flex;
@@ -450,6 +455,7 @@
     </header>
 
     <div class="container">
+        <!-- 只保留兩個統計項目 -->
         <div class="stats-bar">
             <div class="stat-card">
                 <i class="fas fa-bookmark"></i>
@@ -461,16 +467,6 @@
                 <div class="stat-value" id="stat-rated">0</div>
                 <div class="stat-label">已評分餐廳</div>
             </div>
-            <div class="stat-card">
-                <i class="fas fa-chart-line"></i>
-                <div class="stat-value" id="stat-avg-rating">0.0</div>
-                <div class="stat-label">平均評分</div>
-            </div>
-            <div class="stat-card">
-                <i class="fas fa-fire"></i>
-                <div class="stat-value" id="stat-top-cuisine">-</div>
-                <div class="stat-label">最愛料理類型</div>
-            </div>
         </div>
 
         <div class="tabs">
@@ -478,6 +474,7 @@
             <button class="tab" onclick="switchTab('rating')"><i class="fas fa-star"></i> 餐廳評分</button>
         </div>
 
+        <!-- 想嘗試的餐廳 -->
         <div id="to-try-tab" class="tab-content active">
             <div class="form-section">
                 <h2><i class="fas fa-plus-circle"></i> 新增想嘗試的餐廳</h2>
@@ -496,6 +493,11 @@
                             <option value="Indian">印度料理 (Indian)</option>
                             <option value="Other">其他 (Other)</option>
                         </select></div>
+                        <div class="form-group"><label>地區</label><select name="region">
+                            <option value="Kowloon">九龍</option>
+                            <option value="New Territories">新界</option>
+                            <option value="Hong Kong Island">港島</option>
+                        </select></div>
                         <div class="form-group"><label>地點/地址</label><input type="text" name="location" placeholder="輸入餐廳地址"></div>
                         <div class="form-group"><label>價格範圍</label><select name="price">
                             <option value="$">$ - 經濟實惠</option>
@@ -511,6 +513,7 @@
                         </select></div>
                     </div>
                     <div class="form-group"><label>想嘗試的原因</label><textarea name="reason" placeholder="為什麼想嘗試這家餐廳？"></textarea></div>
+                    <div class="form-group"><label>More Information</label><input type="text" name="more-info" placeholder="Link"></div>
                     <div class="form-group"><label>備註</label><textarea name="notes" placeholder="其他備註資訊"></textarea></div>
                     <button type="submit" class="submit-btn"><i class="fas fa-plus"></i><span>新增餐廳</span></button>
                 </form>
@@ -530,6 +533,7 @@
             <div id="to-try-list" class="cards-grid"></div>
         </div>
 
+        <!-- 餐廳評分 -->
         <div id="rating-tab" class="tab-content">
             <div class="form-section">
                 <h2><i class="fas fa-star"></i> 新增餐廳評分</h2>
@@ -548,9 +552,21 @@
                             <option value="Indian">印度料理 (Indian)</option>
                             <option value="Other">其他 (Other)</option>
                         </select></div>
+                        <div class="form-group"><label>地區</label><select name="region">
+                            <option value="Kowloon">九龍</option>
+                            <option value="New Territories">新界</option>
+                            <option value="Hong Kong Island">港島</option>
+                        </select></div>
                         <div class="form-group"><label>地點/地址</label><input type="text" name="location" placeholder="輸入餐廳地址"></div>
                         <div class="form-group"><label>造訪日期</label><input type="date" name="visit-date"></div>
-                        <div class="form-group"><label>實付金額</label><input type="number" name="price-paid" placeholder="0" min="0"></div>
+                        <div class="form-group"><label>實付金額</label><select name="price-paid">
+                            <option value="Below $50">Below $50</option>
+                            <option value="$50-$100">$50-$100</option>
+                            <option value="$100-$200">$100-$200</option>
+                            <option value="$200-$400">$200-$400</option>
+                            <option value="$400-$800">$400-$800</option>
+                            <option value="Above $800">Above $800</option>
+                        </select></div>
                         <div class="form-group"><label>是否會再次光臨？</label><select name="would-return">
                             <option value="definitely">絕對會 (Definitely)</option>
                             <option value="maybe">可能會 (Maybe)</option>
@@ -563,11 +579,9 @@
                         <div class="form-group"><label>食物品質</label><div class="star-rating" data-rating="food"><i class="far fa-star" data-value="1"></i><i class="far fa-star" data-value="2"></i><i class="far fa-star" data-value="3"></i><i class="far fa-star" data-value="4"></i><i class="far fa-star" data-value="5"></i></div><input type="hidden" name="food-rating" value="0"></div>
                         <div class="form-group"><label>服務品質</label><div class="star-rating" data-rating="service"><i class="far fa-star" data-value="1"></i><i class="far fa-star" data-value="2"></i><i class="far fa-star" data-value="3"></i><i class="far fa-star" data-value="4"></i><i class="far fa-star" data-value="5"></i></div><input type="hidden" name="service-rating" value="0"></div>
                         <div class="form-group"><label>環境氛圍</label><div class="star-rating" data-rating="ambiance"><i class="far fa-star" data-value="1"></i><i class="far fa-star" data-value="2"></i><i class="far fa-star" data-value="3"></i><i class="far fa-star" data-value="4"></i><i class="far fa-star" data-value="5"></i></div><input type="hidden" name="ambiance-rating" value="0"></div>
-                        <div class="form-group"><label>性價比</label><div class="star-rating" data-rating="value"><i class="far fa-star" data-value="1"></i><i class="far fa-star" data-value="2"></i><i class="far fa-star" data-value="3"></i><i class="far fa-star" data-value="4"></i><i class="far fa-star" data-value="5"></i></div><input type="hidden" name="value-rating" value="0"></div>
+                        <div class="form-group"><label>CP值</label><div class="star-rating" data-rating="value"><i class="far fa-star" data-value="1"></i><i class="far fa-star" data-value="2"></i><i class="far fa-star" data-value="3"></i><i class="far fa-star" data-value="4"></i><i class="far fa-star" data-value="5"></i></div><input type="hidden" name="value-rating" value="0"></div>
                     </div>
                     <div class="form-group"><label>點餐內容</label><textarea name="dishes" placeholder="列出您點的餐點"></textarea></div>
-                    <div class="form-group"><label>亮點特色</label><textarea name="highlights" placeholder="您最喜歡的部分"></textarea></div>
-                    <div class="form-group"><label>改進建議</label><textarea name="improvements" placeholder="有什麼可以做得更好？"></textarea></div>
                     <div class="form-group"><label>整體評價</label><textarea name="review" placeholder="詳細的用餐體驗評價"></textarea></div>
                     <button type="submit" class="submit-btn"><i class="fas fa-star"></i><span>新增評分</span></button>
                 </form>
@@ -611,13 +625,12 @@
     <script>
         // ==================== 請填入你的 Firebase 設定 ====================
         const firebaseConfig = {
-  apiKey: "AIzaSyBey2Q0-XbfaGoL9sB8zYLtDlVZchvT8pQ",
-  authDomain: "restaurant-3bc1b.firebaseapp.com",
-  projectId: "restaurant-3bc1b",
-  storageBucket: "restaurant-3bc1b.firebasestorage.app",
-  messagingSenderId: "713315038698",
-  appId: "1:713315038698:web:906be6f660642c6eeb2e93",
-  measurementId: "G-HSKWB92ZV6"
+          apiKey: "YOUR_API_KEY_HERE",
+          authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+          projectId: "YOUR_PROJECT_ID",
+          storageBucket: "YOUR_PROJECT_ID.appspot.com",
+          messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+          appId: "YOUR_APP_ID"
         };
 
         firebase.initializeApp(firebaseConfig);
@@ -679,11 +692,13 @@
             const data = {
                 name: f.name.value.trim(),
                 cuisine: f.cuisine.value,
+                region: f.region.value,
                 location: f.location.value.trim(),
                 price: f.price.value,
                 recommendedBy: f['recommended-by'].value.trim(),
                 reason: f.reason.value.trim(),
                 priority: f.priority.value,
+                moreInfo: f['more-info'].value.trim(),
                 notes: f.notes.value.trim(),
                 dateAdded: editingToTryId ? toTryRestaurants.find(r => r.id === editingToTryId)?.dateAdded || firebase.firestore.FieldValue.serverTimestamp() : firebase.firestore.FieldValue.serverTimestamp()
             };
@@ -706,13 +721,12 @@
             const data = {
                 name: f.name.value.trim(),
                 cuisine: f.cuisine.value,
+                region: f.region.value,
                 location: f.location.value.trim(),
                 visitDate: f['visit-date'].value || null,
-                pricePaid: f['price-paid'].value || null,
+                pricePaid: f['price-paid'].value,
                 wouldReturn: f['would-return'].value,
                 dishes: f.dishes.value.trim(),
-                highlights: f.highlights.value.trim(),
-                improvements: f.improvements.value.trim(),
                 review: f.review.value.trim(),
                 overallRating: parseInt(f['overall-rating'].value) || 0,
                 foodRating: parseInt(f['food-rating'].value) || 0,
@@ -767,12 +781,13 @@
                     <div class="card-badges">
                         <span class="badge badge-cuisine"><i class="fas fa-utensils"></i> ${r.cuisine}</span>
                         <span class="badge badge-price"><i class="fas fa-dollar-sign"></i> ${r.price}</span>
+                        <span class="badge badge-region"><i class="fas fa-map"></i> ${r.region === 'Kowloon' ? '九龍' : r.region === 'New Territories' ? '新界' : '港島'}</span>
                         <span class="badge-priority ${r.priority}"><i class="fas fa-flag"></i> ${r.priority==='high'?'高':r.priority==='medium'?'中':'低'}優先</span>
                     </div>
                     <div class="card-info">
                         ${r.location ? `<p><i class="fas fa-map-marker-alt"></i> ${r.location}</p>` : ''}
                         ${r.recommendedBy ? `<p><i class="fas fa-user"></i> 推薦人：${r.recommendedBy}</p>` : ''}
-                        ${r.reason ? `<p><i class="fas fa-lightbulb"></i> ${r.reason.substring(0,100)}${r.reason.length>100?'...':''}</p>` : ''}
+                        ${r.moreInfo ? `<p><i class="fas fa-link"></i> <a href="${r.moreInfo}" target="_blank">連結</a></p>` : ''}
                     </div>
                     <div class="card-actions">
                         <button class="btn btn-primary" onclick="markAsVisited('${r.id}')"><i class="fas fa-check"></i> 標記已造訪</button>
@@ -820,17 +835,18 @@
                     </div>
                     <div class="card-badges">
                         <span class="badge badge-cuisine"><i class="fas fa-utensils"></i> ${r.cuisine}</span>
+                        <span class="badge badge-region"><i class="fas fa-map"></i> ${r.region === 'Kowloon' ? '九龍' : r.region === 'New Territories' ? '新界' : '港島'}</span>
                         ${r.visitDate ? `<span class="badge badge-price"><i class="fas fa-calendar"></i> ${new Date(r.visitDate).toLocaleDateString('zh-TW')}</span>` : ''}
                     </div>
                     <div class="card-info">
                         ${r.location ? `<p><i class="fas fa-map-marker-alt"></i> ${r.location}</p>` : ''}
-                        ${r.pricePaid ? `<p><i class="fas fa-dollar-sign"></i> 實付：NT$${r.pricePaid}</p>` : ''}
+                        <p><i class="fas fa-dollar-sign"></i> 實付：${r.pricePaid}</p>
                     </div>
                     <div class="rating-breakdown">
                         <div class="rating-item"><span>食物</span><span class="rating-item-stars">${generateStars(r.foodRating)}</span></div>
                         <div class="rating-item"><span>服務</span><span class="rating-item-stars">${generateStars(r.serviceRating)}</span></div>
                         <div class="rating-item"><span>環境</span><span class="rating-item-stars">${generateStars(r.ambianceRating)}</span></div>
-                        <div class="rating-item"><span>性價比</span><span class="rating-item-stars">${generateStars(r.valueRating)}</span></div>
+                        <div class="rating-item"><span>CP值</span><span class="rating-item-stars">${generateStars(r.valueRating)}</span></div>
                     </div>
                     ${r.wouldReturn ? `<span class="return-badge ${r.wouldReturn}">${r.wouldReturn==='definitely'?'✓ 絕對會再訪':r.wouldReturn==='maybe'?'? 可能會':r.wouldReturn==='probably-not'?'✗ 可能不會':'✗✗ 絕不會'}</span>` : ''}
                     <div class="card-actions">
@@ -854,9 +870,9 @@
             if (!r) return;
             editingToTryId = id;
             const f = document.getElementById('to-try-form');
-            f.name.value = r.name; f.cuisine.value = r.cuisine; f.location.value = r.location || '';
-            f.price.value = r.price; f['recommended-by'].value = r.recommendedBy || '';
-            f.reason.value = r.reason || ''; f.priority.value = r.priority; f.notes.value = r.notes || '';
+            f.name.value = r.name; f.cuisine.value = r.cuisine; f.region.value = r.region || 'Kowloon';
+            f.location.value = r.location || ''; f.price.value = r.price; f['recommended-by'].value = r.recommendedBy || '';
+            f.reason.value = r.reason || ''; f.priority.value = r.priority; f['more-info'].value = r.moreInfo || ''; f.notes.value = r.notes || '';
             f.scrollIntoView({behavior:'smooth'});
         }
 
@@ -865,11 +881,9 @@
             if (!r) return;
             editingRatingId = id;
             const f = document.getElementById('rating-form');
-            f.name.value = r.name; f.cuisine.value = r.cuisine; f.location.value = r.location || '';
-            f['visit-date'].value = r.visitDate || ''; f['price-paid'].value = r.pricePaid || '';
-            f['would-return'].value = r.wouldReturn; f.dishes.value = r.dishes || '';
-            f.highlights.value = r.highlights || ''; f.improvements.value = r.improvements || '';
-            f.review.value = r.review || '';
+            f.name.value = r.name; f.cuisine.value = r.cuisine; f.region.value = r.region || 'Kowloon';
+            f.location.value = r.location || ''; f['visit-date'].value = r.visitDate || ''; f['price-paid'].value = r.pricePaid;
+            f['would-return'].value = r.wouldReturn; f.dishes.value = r.dishes || ''; f.review.value = r.review || '';
             ['overall','food','service','ambiance','value'].forEach(t => {
                 const val = r[`${t}Rating`] || 0;
                 f[`${t}-rating`].value = val;
@@ -883,8 +897,8 @@
             if (!r) return;
             switchTab('rating');
             const f = document.getElementById('rating-form');
-            f.name.value = r.name; f.cuisine.value = r.cuisine; f.location.value = r.location || '';
-            f['visit-date'].value = new Date().toISOString().split('T')[0];
+            f.name.value = r.name; f.cuisine.value = r.cuisine; f.region.value = r.region || 'Kowloon';
+            f.location.value = r.location || ''; f['visit-date'].value = new Date().toISOString().split('T')[0];
             f.scrollIntoView({behavior:'smooth'});
             deleteToTry(id);
         }
@@ -898,8 +912,9 @@
                     <div class="rating-stars">${generateStars(r.overallRating)}</div>
                     <span class="rating-value">${r.overallRating}.0 / 5.0</span>
                 </div>
-                ${r.review ? `<p style="white-space:pre-wrap;"><strong>整體評價：</strong><br>${r.review}</p>` : ''}
-                ${r.highlights ? `<p style="margin-top:20px;"><strong>亮點：</strong><br>${r.highlights}</p>` : ''}
+                <p><strong>地區：</strong>${r.region === 'Kowloon' ? '九龍' : r.region === 'New Territories' ? '新界' : '港島'}</p>
+                ${r.review ? `<p style="white-space:pre-wrap;margin-top:20px;"><strong>整體評價：</strong><br>${r.review}</p>` : ''}
+                ${r.dishes ? `<p style="margin-top:20px;"><strong>點餐內容：</strong><br>${r.dishes}</p>` : ''}
             `;
             document.getElementById('review-modal').classList.add('active');
         }
@@ -923,20 +938,6 @@
         function updateStats() {
             document.getElementById('stat-to-try').textContent = toTryRestaurants.length;
             document.getElementById('stat-rated').textContent = ratedRestaurants.length;
-            if (ratedRestaurants.length > 0) {
-                const avg = ratedRestaurants.reduce((s,r) => s + r.overallRating, 0) / ratedRestaurants.length;
-                document.getElementById('stat-avg-rating').textContent = avg.toFixed(1);
-            } else {
-                document.getElementById('stat-avg-rating').textContent = '0.0';
-            }
-            const all = [...toTryRestaurants, ...ratedRestaurants];
-            if (all.length > 0) {
-                const counts = all.reduce((o,r)=>{ o[r.cuisine]=(o[r.cuisine]||0)+1; return o; }, {});
-                const top = Object.keys(counts).sort((a,b)=>counts[b]-counts[a])[0];
-                document.getElementById('stat-top-cuisine').textContent = top;
-            } else {
-                document.getElementById('stat-top-cuisine').textContent = '-';
-            }
         }
 
         function showSuccess(msg) {
@@ -989,4 +990,3 @@
     </script>
 </body>
 </html>
-
