@@ -820,7 +820,7 @@
             } catch (e) { console.error(e); alert('儲存失敗，請檢查 Firebase 設定'); }
         }
 
-        function renderToTryList() {
+ function renderToTryList() {
             const container = document.getElementById('to-try-list');
             const search = document.getElementById('search-to-try').value.toLowerCase();
             const cuisine = document.getElementById('filter-cuisine-to-try').value;
@@ -859,10 +859,10 @@
                     <div class="card-info">
                         ${r.location ? `<p><i class="fas fa-map-marker-alt"></i> ${r.location}</p>` : ''}
                         ${r.recommendedBy ? `<p><i class="fas fa-user"></i> 推薦人：${r.recommendedBy}</p>` : ''}
+                        ${r.moreInfo ? `<p><i class="fas fa-link"></i> <a href="${r.moreInfo}" target="_blank">${r.moreInfo}</a></p>` : ''}
                     </div>
                     <div id="to-try-${r.id}" class="comment-section">
                         ${r.reason ? `<p><strong>想嘗試的原因：</strong><br>${r.reason}</p>` : ''}
-                        ${r.moreInfo ? `<p><strong>More Information：</strong><br><a href="${r.moreInfo}" target="_blank">${r.moreInfo}</a></p>` : ''}
                         ${r.notes ? `<p><strong>備註：</strong><br>${r.notes}</p>` : ''}
                     </div>
                     <div class="card-actions">
