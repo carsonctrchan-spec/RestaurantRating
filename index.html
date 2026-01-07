@@ -263,6 +263,7 @@
             box-shadow: 0 4px 20px var(--shadow);
             transition: all 0.3s ease;
             border: 2px solid transparent;
+            cursor: pointer;
         }
         .restaurant-card:hover {
             transform: translateY(-5px);
@@ -419,6 +420,16 @@
         }
         .success-message.show { display: flex; }
         @keyframes slideInRight { from { opacity: 0; transform: translateX(100px); } to { opacity: 1; transform: translateX(0); } }
+        .comment-section {
+            margin-top: 15px;
+            padding: 10px;
+            background: var(--cream);
+            border-radius: 10px;
+            display: none;
+        }
+        .comment-section.active {
+            display: block;
+        }
         footer {
             text-align: center;
             padding: 30px 20px;
@@ -490,6 +501,9 @@
                             <option value="American">美式料理 (American)</option>
                             <option value="Mexican">墨西哥料理 (Mexican)</option>
                             <option value="Indian">印度料理 (Indian)</option>
+                            <option value="Fusion">Fusion</option>
+                            <option value="Western">Western</option>
+                            <option value="Drinks">Drinks</option>
                             <option value="Cafe">咖啡廳 (Cafe)</option>
                             <option value="Dessert">甜品 (Dessert)</option>
                             <option value="Other">其他 (Other)</option>
@@ -533,6 +547,9 @@
                     <option value="American">美式料理</option>
                     <option value="Mexican">墨西哥料理</option>
                     <option value="Indian">印度料理</option>
+                    <option value="Fusion">Fusion</option>
+                    <option value="Western">Western</option>
+                    <option value="Drinks">Drinks</option>
                     <option value="Cafe">咖啡廳</option>
                     <option value="Dessert">甜品</option>
                     <option value="Other">其他</option>
@@ -573,6 +590,9 @@
                             <option value="American">美式料理 (American)</option>
                             <option value="Mexican">墨西哥料理 (Mexican)</option>
                             <option value="Indian">印度料理 (Indian)</option>
+                            <option value="Fusion">Fusion</option>
+                            <option value="Western">Western</option>
+                            <option value="Drinks">Drinks</option>
                             <option value="Cafe">咖啡廳 (Cafe)</option>
                             <option value="Dessert">甜品 (Dessert)</option>
                             <option value="Other">其他 (Other)</option>
@@ -625,6 +645,9 @@
                     <option value="American">美式料理</option>
                     <option value="Mexican">墨西哥料理</option>
                     <option value="Indian">印度料理</option>
+                    <option value="Fusion">Fusion</option>
+                    <option value="Western">Western</option>
+                    <option value="Drinks">Drinks</option>
                     <option value="Cafe">咖啡廳</option>
                     <option value="Dessert">甜品</option>
                     <option value="Other">其他</option>
@@ -671,14 +694,14 @@
 
     <script>
         // ==================== 請填入你的 Firebase 設定 ====================
-const firebaseConfig = {
+      const firebaseConfig = {
   apiKey: "AIzaSyBey2Q0-XbfaGoL9sB8zYLtDlVZchvT8pQ",
   authDomain: "restaurant-3bc1b.firebaseapp.com",
   projectId: "restaurant-3bc1b",
   storageBucket: "restaurant-3bc1b.firebasestorage.app",
   messagingSenderId: "713315038698",
   appId: "1:713315038698:web:906be6f660642c6eeb2e93",
-};
+        };
 
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
@@ -825,7 +848,7 @@ const firebaseConfig = {
             }
 
             container.innerHTML = list.map(r => `
-                <div class="restaurant-card">
+                <div class="restaurant-card" onclick="toggleComment('to-try-${r.id}')">
                     <div class="card-header"><h3>${r.name}</h3></div>
                     <div class="card-badges">
                         <span class="badge badge-cuisine"><i class="fas fa-utensils"></i> ${r.cuisine}</span>
@@ -836,12 +859,16 @@ const firebaseConfig = {
                     <div class="card-info">
                         ${r.location ? `<p><i class="fas fa-map-marker-alt"></i> ${r.location}</p>` : ''}
                         ${r.recommendedBy ? `<p><i class="fas fa-user"></i> 推薦人：${r.recommendedBy}</p>` : ''}
-                        ${r.moreInfo ? `<p><i class="fas fa-link"></i> <a href="${r.moreInfo}" target="_blank">連結</a></p>` : ''}
+                    </div>
+                    <div id="to-try-${r.id}" class="comment-section">
+                        ${r.reason ? `<p><strong>想嘗試的原因：</strong><br>${r.reason}</p>` : ''}
+                        ${r.moreInfo ? `<p><strong>More Information：</strong><br><a href="${r.moreInfo}" target="_blank">${r.moreInfo}</a></p>` : ''}
+                        ${r.notes ? `<p><strong>備註：</strong><br>${r.notes}</p>` : ''}
                     </div>
                     <div class="card-actions">
-                        <button class="btn btn-primary" onclick="markAsVisited('${r.id}')"><i class="fas fa-check"></i> 標記已造訪</button>
-                        <button class="btn btn-secondary" onclick="editToTry('${r.id}')"><i class="fas fa-edit"></i> 編輯</button>
-                        <button class="btn btn-danger" onclick="deleteToTry('${r.id}')"><i class="fas fa-trash"></i> 刪除</button>
+                        <button class="btn btn-primary" onclick="event.stopPropagation(); markAsVisited('${r.id}')"><i class="fas fa-check"></i> 標記已造訪</button>
+                        <button class="btn btn-secondary" onclick="event.stopPropagation(); editToTry('${r.id}')"><i class="fas fa-edit"></i> 編輯</button>
+                        <button class="btn btn-danger" onclick="event.stopPropagation(); deleteToTry('${r.id}')"><i class="fas fa-trash"></i> 刪除</button>
                     </div>
                 </div>
             `).join('');
@@ -878,7 +905,7 @@ const firebaseConfig = {
             }
 
             container.innerHTML = list.map(r => `
-                <div class="restaurant-card">
+                <div class="restaurant-card" onclick="toggleComment('rating-${r.id}')">
                     <div class="card-header"><h3>${r.name}</h3></div>
                     <div class="rating-display">
                         <div class="rating-stars">${generateStars(r.overallRating)}</div>
@@ -893,20 +920,22 @@ const firebaseConfig = {
                         ${r.location ? `<p><i class="fas fa-map-marker-alt"></i> ${r.location}</p>` : ''}
                         <p><i class="fas fa-dollar-sign"></i> 實付：${r.pricePaid}</p>
                     </div>
-                    <div class="rating-breakdown">
-                        <div class="rating-item"><span>食物</span><span class="rating-item-stars">${generateStars(r.foodRating)}</span></div>
-                        <div class="rating-item"><span>服務</span><span class="rating-item-stars">${generateStars(r.serviceRating)}</span></div>
-                        <div class="rating-item"><span>環境</span><span class="rating-item-stars">${generateStars(r.ambianceRating)}</span></div>
-                        <div class="rating-item"><span>CP值</span><span class="rating-item-stars">${generateStars(r.valueRating)}</span></div>
+                    <div id="rating-${r.id}" class="comment-section">
+                        ${r.dishes ? `<p><strong>點餐內容：</strong><br>${r.dishes}</p>` : ''}
+                        ${r.review ? `<p><strong>整體評價：</strong><br>${r.review}</p>` : ''}
                     </div>
-                    ${r.wouldReturn ? `<span class="return-badge ${r.wouldReturn}">${r.wouldReturn==='definitely'?'✓ 絕對會再訪':r.wouldReturn==='maybe'?'? 可能會':r.wouldReturn==='probably-not'?'✗ 可能不會':'✗✗ 絕不會'}</span>` : ''}
                     <div class="card-actions">
-                        <button class="btn btn-primary" onclick="viewFullReview('${r.id}')"><i class="fas fa-eye"></i> 完整評價</button>
-                        <button class="btn btn-secondary" onclick="editRating('${r.id}')"><i class="fas fa-edit"></i> 編輯</button>
-                        <button class="btn btn-danger" onclick="deleteRating('${r.id}')"><i class="fas fa-trash"></i> 刪除</button>
+                        <button class="btn btn-primary" onclick="event.stopPropagation(); viewFullReview('${r.id}')"><i class="fas fa-eye"></i> 完整評價</button>
+                        <button class="btn btn-secondary" onclick="event.stopPropagation(); editRating('${r.id}')"><i class="fas fa-edit"></i> 編輯</button>
+                        <button class="btn btn-danger" onclick="event.stopPropagation(); deleteRating('${r.id}')"><i class="fas fa-trash"></i> 刪除</button>
                     </div>
                 </div>
             `).join('');
+        }
+
+        function toggleComment(id) {
+            const el = document.getElementById(id);
+            if (el) el.classList.toggle('active');
         }
 
         function generateStars(n) {
@@ -1043,4 +1072,3 @@ const firebaseConfig = {
     </script>
 </body>
 </html>
-
