@@ -508,7 +508,7 @@
         </div>
 
         <!-- 想嘗試的餐廳 -->
-        <div id="to-try-tab" class="tab-content active">
+<div id="to-try-tab" class="tab-content active">
             <div class="form-section">
                 <h2><i class="fas fa-plus-circle"></i> 新增想嘗試的餐廳</h2>
                 <form id="to-try-form" onsubmit="addToTryRestaurant(event)">
@@ -529,6 +529,7 @@
                             <option value="Drinks">Drinks</option>
                             <option value="Cafe">咖啡廳 (Cafe)</option>
                             <option value="Dessert">甜品 (Dessert)</option>
+                            <option value="SmallBites">小食 (Small Bites)</option>
                             <option value="Other">其他 (Other)</option>
                         </select></div>
                         <div class="form-group"><label>地區</label><select name="region">
@@ -575,6 +576,7 @@
                     <option value="Drinks">Drinks</option>
                     <option value="Cafe">咖啡廳</option>
                     <option value="Dessert">甜品</option>
+                    <option value="SmallBites">小食</option>
                     <option value="Other">其他</option>
                 </select>
                 <select class="filter-select" id="filter-region-to-try" onchange="filterToTry()">
@@ -597,7 +599,7 @@
         </div>
 
         <!-- 餐廳評分 -->
-        <div id="rating-tab" class="tab-content">
+      <div id="rating-tab" class="tab-content">
             <div class="form-section">
                 <h2><i class="fas fa-star"></i> 新增餐廳評分</h2>
                 <form id="rating-form" onsubmit="addRating(event)">
@@ -618,6 +620,7 @@
                             <option value="Drinks">Drinks</option>
                             <option value="Cafe">咖啡廳 (Cafe)</option>
                             <option value="Dessert">甜品 (Dessert)</option>
+                            <option value="SmallBites">小食 (Small Bites)</option>
                             <option value="Other">其他 (Other)</option>
                         </select></div>
                         <div class="form-group"><label>地區</label><select name="region">
@@ -673,6 +676,7 @@
                     <option value="Drinks">Drinks</option>
                     <option value="Cafe">咖啡廳</option>
                     <option value="Dessert">甜品</option>
+                    <option value="SmallBites">小食</option>
                     <option value="Other">其他</option>
                 </select>
                 <select class="filter-select" id="filter-region-rating" onchange="filterRatings()">
@@ -1095,6 +1099,7 @@
     </script>
 </body>
 </html>
+
 
 
 
