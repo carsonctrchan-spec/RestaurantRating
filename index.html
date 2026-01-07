@@ -422,13 +422,21 @@
         @keyframes slideInRight { from { opacity: 0; transform: translateX(100px); } to { opacity: 1; transform: translateX(0); } }
         .comment-section {
             margin-top: 15px;
-            padding: 10px;
+            padding: 15px;
             background: var(--cream);
             border-radius: 10px;
-            display: none;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease, padding 0.4s ease, opacity 0.3s ease;
+            opacity: 0;
         }
         .comment-section.active {
-            display: block;
+            max-height: 500px; /* 大一點，夠顯示長內容 */
+            padding: 15px;
+            opacity: 1;
+        }
+        .restaurant-card {
+            cursor: pointer;
         }
         footer {
             text-align: center;
@@ -856,11 +864,11 @@
                         <span class="badge badge-region"><i class="fas fa-map"></i> ${r.region === 'Kowloon' ? '九龍' : r.region === 'New Territories' ? '新界' : '港島'}</span>
                         <span class="badge-priority ${r.priority}"><i class="fas fa-flag"></i> ${r.priority==='high'?'高':r.priority==='medium'?'中':'低'}優先</span>
                     </div>
-                    <div class="card-info">
-                        ${r.location ? `<p><i class="fas fa-map-marker-alt"></i> ${r.location}</p>` : ''}
-                        ${r.recommendedBy ? `<p><i class="fas fa-user"></i> 推薦人：${r.recommendedBy}</p>` : ''}
-                        ${r.moreInfo ? `<p><i class="fas fa-link"></i> <a href="${r.moreInfo}" target="_blank">${r.moreInfo}</a></p>` : ''}
-                    </div>
+                   <div class="card-info">
+    ${r.location ? `<p><i class="fas fa-map-marker-alt"></i> ${r.location}</p>` : ''}
+    ${r.recommendedBy ? `<p><i class="fas fa-user"></i> 推薦人：${r.recommendedBy}</p>` : ''}
+    ${r.moreInfo ? `<p><i class="fas fa-link"></i> <a href="${r.moreInfo}" target="_blank" rel="noopener">連結</a></p>` : ''}
+</div>
                     <div id="to-try-${r.id}" class="comment-section">
                         ${r.reason ? `<p><strong>想嘗試的原因：</strong><br>${r.reason}</p>` : ''}
                         ${r.notes ? `<p><strong>備註：</strong><br>${r.notes}</p>` : ''}
@@ -1072,3 +1080,4 @@
     </script>
 </body>
 </html>
+
