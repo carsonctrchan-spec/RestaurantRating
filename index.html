@@ -513,8 +513,9 @@
         #editor-box h2 { margin-bottom: 16px; color: var(--coral); font-size: 1.5rem; }
         #editor-box p { margin-bottom: 20px; font-size: 0.95rem; }
         #editor-password { padding: 12px 14px; width: 100%; margin-bottom: 16px; border: 2px solid var(--gray); border-radius: 10px; font-size: 1rem; }
-        #editor-box button { width: 100%; padding: 14px; background: var(--coral); color: white; border: none; border-radius: 10px; font-size: 1rem; cursor: pointer; }
-        #skip-btn { margin-top: 20px; font-size: 0.95rem; color: var(--gray); cursor: pointer; text-decoration: underline; }
+        #confirm-btn { width: 100%; padding: 14px; background: var(--coral); color: white; border: none; border-radius: 10px; font-size: 1rem; cursor: pointer; }
+        #confirm-btn:hover { background: #e55a5a; }
+        #skip-link { margin-top: 20px; font-size: 0.95rem; color: var(--gray); cursor: pointer; text-decoration: underline; }
 
         @media (max-width: 480px) {
             #editor-box { padding: 24px 18px; width: 94%; }
@@ -524,15 +525,15 @@
 <body>
 
     <!-- Password Prompt -->
-   <div id="editor-prompt">
-    <div id="editor-box">
-        <h2>編輯權限驗證</h2>
-        <p>輸入密碼才能新增、編輯、刪除或標記已造訪</p>
-        <input type="password" id="editor-password" placeholder="輸入密碼">
-        <button id="confirm-btn">確認</button>
-        <div id="skip-link">我只想觀看 →</div>
+    <div id="editor-prompt">
+        <div id="editor-box">
+            <h2>編輯權限驗證</h2>
+            <p>輸入密碼才能新增、編輯、刪除或標記已造訪</p>
+            <input type="password" id="editor-password" placeholder="輸入密碼">
+            <button id="confirm-btn">確認</button>
+            <div id="skip-link">我只想觀看 →</div>
+        </div>
     </div>
-</div>
 
     <header>
         <h1><i class="fas fa-utensils"></i> Restaurant Manager</h1>
@@ -808,69 +809,72 @@
         let editingToTryId = null;
         let editingRatingId = null;
 
-  let isEditor = false;
-const EDITOR_PASSWORD = "ilymy";  // Change to your password
+        let isEditor = false;
+        const EDITOR_PASSWORD = "friends2026";
 
-function hidePrompt() {
-    const prompt = document.getElementById('editor-prompt');
-    if (prompt) prompt.style.display = 'none';
-    document.body.style.overflow = '';  // Restore scrolling
-}
+        function hidePrompt() {
+            const prompt = document.getElementById('editor-prompt');
+            if (prompt) prompt.style.display = 'none';
+            document.body.style.overflow = '';
+        }
 
-function checkEditorAccess() {
-    const input = document.getElementById('editor-password');
-    if (!input) return;
-    const value = input.value.trim();
-    
-    if (value === EDITOR_PASSWORD) {
-        isEditor = true;
-        hidePrompt();
-        document.getElementById('editor-status').textContent = '目前模式：編輯模式（可新增/修改/刪除）';
-        showSuccess('已獲得編輯權限！');
-    } else {
-        alert('密碼錯誤，請再試一次');
-        input.value = '';
-        input.focus();
-    }
-}
-
-function skipEditor() {
-    hidePrompt();
-    document.getElementById('editor-status').textContent = '目前模式：觀看模式（只能瀏覽）';
-    showSuccess('以觀看模式進入');
-}
-
-// Attach events reliably (after DOM ready)
-document.addEventListener('DOMContentLoaded', () => {
-    // Confirm button click
-    const confirmBtn = document.getElementById('confirm-btn');
-    if (confirmBtn) {
-        confirmBtn.addEventListener('click', checkEditorAccess);
-        confirmBtn.addEventListener('touchstart', checkEditorAccess); // better mobile tap
-    }
-
-    // Skip link click/tap
-    const skipLink = document.getElementById('skip-link');
-    if (skipLink) {
-        skipLink.addEventListener('click', skipEditor);
-        skipLink.addEventListener('touchstart', skipEditor);
-    }
-
-    // Enter key in input
-    const passwordInput = document.getElementById('editor-password');
-    if (passwordInput) {
-        passwordInput.addEventListener('keydown', function(e) {
-            if (e.key === 'Enter') {
-                e.preventDefault(); // prevent any default behavior
-                checkEditorAccess();
+        function checkEditorAccess() {
+            const input = document.getElementById('editor-password');
+            if (!input) return;
+            const value = input.value.trim();
+            
+            if (value === EDITOR_PASSWORD) {
+                isEditor = true;
+                hidePrompt();
+                document.getElementById('editor-status').textContent = '目前模式：編輯模式（可新增/修改/刪除）';
+                showSuccess('已獲得編輯權限！');
+            } else {
+                alert('密碼錯誤，請再試一次');
+                input.value = '';
+                input.focus();
             }
-        });
-        passwordInput.focus(); // auto focus on load
-    }
+        }
 
-    // Lock scroll while prompt is visible
-    document.body.style.overflow = 'hidden';
-});
+        function skipEditor() {
+            hidePrompt();
+            document.getElementById('editor-status').textContent = '目前模式：觀看模式（只能瀏覽）';
+            showSuccess('以觀看模式進入');
+        }
+
+        // Attach events reliably
+        document.addEventListener('DOMContentLoaded', () => {
+            const confirmBtn = document.getElementById('confirm-btn');
+            if (confirmBtn) {
+                confirmBtn.addEventListener('click', checkEditorAccess);
+                confirmBtn.addEventListener('touchstart', (e) => {
+                    e.preventDefault();
+                    checkEditorAccess();
+                });
+            }
+
+            const skipLink = document.getElementById('skip-link');
+            if (skipLink) {
+                skipLink.addEventListener('click', skipEditor);
+                skipLink.addEventListener('touchstart', (e) => {
+                    e.preventDefault();
+                    skipEditor();
+                });
+            }
+
+            const passwordInput = document.getElementById('editor-password');
+            if (passwordInput) {
+                passwordInput.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        checkEditorAccess();
+                    }
+                });
+                passwordInput.focus();
+            }
+
+            // Lock scroll while prompt is visible
+            document.body.style.overflow = 'hidden';
+        });
 
         async function addToTryRestaurant(event) {
             event.preventDefault();
@@ -975,9 +979,16 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!r) return;
             editingToTryId = id;
             const f = document.getElementById('to-try-form');
-            f.name.value = r.name; f.cuisine.value = r.cuisine; f.region.value = r.region || 'Kowloon';
-            f.location.value = r.location || ''; f.price.value = r.price; f['recommended-by'].value = r.recommendedBy || '';
-            f.reason.value = r.reason || ''; f.priority.value = r.priority; f['more-info'].value = r.moreInfo || ''; f.notes.value = r.notes || '';
+            f.name.value = r.name;
+            f.cuisine.value = r.cuisine;
+            f.region.value = r.region || 'Kowloon';
+            f.location.value = r.location || '';
+            f.price.value = r.price;
+            f['recommended-by'].value = r.recommendedBy || '';
+            f.reason.value = r.reason || '';
+            f.priority.value = r.priority;
+            f['more-info'].value = r.moreInfo || '';
+            f.notes.value = r.notes || '';
             f.scrollIntoView({behavior:'smooth'});
         }
 
@@ -990,9 +1001,15 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!r) return;
             editingRatingId = id;
             const f = document.getElementById('rating-form');
-            f.name.value = r.name; f.cuisine.value = r.cuisine; f.region.value = r.region || 'Kowloon';
-            f.location.value = r.location || ''; f['visit-date'].value = r.visitDate || ''; f['price-paid'].value = r.pricePaid;
-            f['would-return'].value = r.wouldReturn; f.dishes.value = r.dishes || ''; f.review.value = r.review || '';
+            f.name.value = r.name;
+            f.cuisine.value = r.cuisine;
+            f.region.value = r.region || 'Kowloon';
+            f.location.value = r.location || '';
+            f['visit-date'].value = r.visitDate || '';
+            f['price-paid'].value = r.pricePaid;
+            f['would-return'].value = r.wouldReturn;
+            f.dishes.value = r.dishes || '';
+            f.review.value = r.review || '';
             ['overall','food','service','ambiance','value'].forEach(t => {
                 const val = r[`${t}Rating`] || 0;
                 f[`${t}-rating`].value = val;
@@ -1010,8 +1027,11 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!r) return;
             switchTab('rating');
             const f = document.getElementById('rating-form');
-            f.name.value = r.name; f.cuisine.value = r.cuisine; f.region.value = r.region || 'Kowloon';
-            f.location.value = r.location || ''; f['visit-date'].value = new Date().toISOString().split('T')[0];
+            f.name.value = r.name;
+            f.cuisine.value = r.cuisine;
+            f.region.value = r.region || 'Kowloon';
+            f.location.value = r.location || '';
+            f['visit-date'].value = new Date().toISOString().split('T')[0];
             f.scrollIntoView({behavior:'smooth'});
             deleteToTry(id);
         }
@@ -1185,5 +1205,75 @@ document.addEventListener('DOMContentLoaded', () => {
                         ${r.reason ? `<p><strong>想嘗試的原因：</strong><br>${r.reason}</p>` : ''}
                         ${r.notes ? `<p><strong>備註：</strong><br>${r.notes}</p>` : ''}
                     </div>
-                    
+                    <div class="card-actions">
+                        <button class="btn btn-primary" onclick="event.stopPropagation(); markAsVisited('${r.id}')"><i class="fas fa-check"></i> 標記已造訪</button>
+                        <button class="btn btn-secondary" onclick="event.stopPropagation(); editToTry('${r.id}')"><i class="fas fa-edit"></i> 編輯</button>
+                        <button class="btn btn-danger" onclick="event.stopPropagation(); deleteToTry('${r.id}')"><i class="fas fa-trash"></i> 刪除</button>
+                    </div>
+                </div>
+            `).join('');
 
+            // Ensure new cards are collapsed
+            container.querySelectorAll('.comment-section').forEach(el => el.classList.remove('active'));
+        }
+
+        function renderRatingList() {
+            const container = document.getElementById('rating-list');
+            const search = document.getElementById('search-rating').value.toLowerCase();
+            const cuisine = document.getElementById('filter-cuisine-rating').value;
+            const region = document.getElementById('filter-region-rating').value;
+            const sort = document.getElementById('sort-rating').value;
+
+            let list = ratedRestaurants.filter(r => 
+                (r.name.toLowerCase().includes(search) || (r.location?.toLowerCase().includes(search))) &&
+                (!cuisine || r.cuisine === cuisine) &&
+                (!region || r.region === region)
+            );
+
+            list.sort((a,b) => {
+                const aTime = a.visitDate || a.dateAdded?.seconds || 0;
+                const bTime = b.visitDate || b.dateAdded?.seconds || 0;
+                if (sort === 'date-desc') return bTime - aTime;
+                if (sort === 'date-asc') return aTime - bTime;
+                if (sort === 'rating-high') return b.overallRating - a.overallRating;
+                if (sort === 'rating-low') return a.overallRating - b.overallRating;
+                if (sort === 'name-asc') return a.name.localeCompare(b.name);
+                if (sort === 'name-desc') return b.name.localeCompare(a.name);
+                return 0;
+            });
+
+            if (list.length === 0) {
+                container.innerHTML = `<div class="empty-state"><i class="fas fa-star"></i><h3>還沒有評分記錄</h3><p>開始記錄用餐體驗吧！</p></div>`;
+                return;
+            }
+
+            container.innerHTML = list.map(r => `
+                <div class="restaurant-card" onclick="toggleComment('rating-${r.id}')">
+                    <div class="card-header"><h3>${r.name}</h3></div>
+                    <div class="rating-display">
+                        <div class="rating-stars">${generateStars(r.overallRating)}</div>
+                        <span class="rating-value">${r.overallRating}.0 / 5.0</span>
+                    </div>
+                    <div class="card-badges">
+                        <span class="badge badge-cuisine"><i class="fas fa-utensils"></i> ${r.cuisine}</span>
+                        <span class="badge badge-region"><i class="fas fa-map"></i> ${r.region === 'Kowloon' ? '九龍' : r.region === 'New Territories' ? '新界' : '港島'}</span>
+                        ${r.visitDate ? `<span class="badge badge-price"><i class="fas fa-calendar"></i> ${new Date(r.visitDate).toLocaleDateString('zh-TW')}</span>` : ''}
+                    </div>
+                    <div class="card-info">
+                        ${r.location ? `<p><i class="fas fa-map-marker-alt"></i> ${r.location}</p>` : ''}
+                        <p><i class="fas fa-dollar-sign"></i> 實付：${r.pricePaid}</p>
+                    </div>
+                    <div id="rating-${r.id}" class="comment-section">
+                        ${r.dishes ? `<p><strong>點餐內容：</strong><br>${r.dishes}</p>` : ''}
+                        ${r.review ? `<p><strong>整體評價：</strong><br>${r.review}</p>` : ''}
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn btn-primary" onclick="event.stopPropagation(); viewFullReview('${r.id}')"><i class="fas fa-eye"></i> 完整評價</button>
+                        <button class="btn btn-secondary" onclick="event.stopPropagation(); editRating('${r.id}')"><i class="fas fa-edit"></i> 編輯</button>
+                        <button class="btn btn-danger" onclick="event.stopPropagation(); deleteRating('${r.id}')"><i class="fas fa-trash"></i> 刪除</button>
+                    </div>
+                </div>
+            `).join('');
+
+            // Ensure new cards are collapsed
+            container.querySelectorAll('.comment-section').forEach
