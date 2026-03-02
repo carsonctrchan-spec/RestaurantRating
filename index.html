@@ -524,15 +524,15 @@
 <body>
 
     <!-- Password Prompt -->
-    <div id="editor-prompt">
-        <div id="editor-box">
-            <h2>編輯權限驗證</h2>
-            <p>輸入密碼才能新增、編輯、刪除或標記已造訪</p>
-            <input type="password" id="editor-password" placeholder="輸入密碼">
-            <button onclick="checkEditorAccess()">確認</button>
-            <div id="skip-btn" onclick="skipEditor()">我只想觀看 →</div>
-        </div>
+   <div id="editor-prompt">
+    <div id="editor-box">
+        <h2>編輯權限驗證</h2>
+        <p>輸入密碼才能新增、編輯、刪除或標記已造訪</p>
+        <input type="password" id="editor-password" placeholder="輸入密碼">
+        <button id="confirm-btn">確認</button>
+        <div id="skip-link">我只想觀看 →</div>
     </div>
+</div>
 
     <header>
         <h1><i class="fas fa-utensils"></i> Restaurant Manager</h1>
@@ -808,32 +808,69 @@
         let editingToTryId = null;
         let editingRatingId = null;
 
-        let isEditor = false;
-        const EDITOR_PASSWORD = "friends2026";
+  let isEditor = false;
+const EDITOR_PASSWORD = "ilymy";  // Change to your password
 
-        function checkEditorAccess() {
-            const input = document.getElementById('editor-password');
-            if (!input) return;
-            const value = input.value.trim();
-            if (value === EDITOR_PASSWORD) {
-                isEditor = true;
-                document.getElementById('editor-prompt').style.display = 'none';
-                document.getElementById('editor-status').textContent = '目前模式：編輯模式（可新增/修改/刪除）';
-                showSuccess('已獲得編輯權限！');
-                document.body.style.overflow = '';
-            } else {
-                alert('密碼錯誤，請再試一次');
-                input.value = '';
-                input.focus();
+function hidePrompt() {
+    const prompt = document.getElementById('editor-prompt');
+    if (prompt) prompt.style.display = 'none';
+    document.body.style.overflow = '';  // Restore scrolling
+}
+
+function checkEditorAccess() {
+    const input = document.getElementById('editor-password');
+    if (!input) return;
+    const value = input.value.trim();
+    
+    if (value === EDITOR_PASSWORD) {
+        isEditor = true;
+        hidePrompt();
+        document.getElementById('editor-status').textContent = '目前模式：編輯模式（可新增/修改/刪除）';
+        showSuccess('已獲得編輯權限！');
+    } else {
+        alert('密碼錯誤，請再試一次');
+        input.value = '';
+        input.focus();
+    }
+}
+
+function skipEditor() {
+    hidePrompt();
+    document.getElementById('editor-status').textContent = '目前模式：觀看模式（只能瀏覽）';
+    showSuccess('以觀看模式進入');
+}
+
+// Attach events reliably (after DOM ready)
+document.addEventListener('DOMContentLoaded', () => {
+    // Confirm button click
+    const confirmBtn = document.getElementById('confirm-btn');
+    if (confirmBtn) {
+        confirmBtn.addEventListener('click', checkEditorAccess);
+        confirmBtn.addEventListener('touchstart', checkEditorAccess); // better mobile tap
+    }
+
+    // Skip link click/tap
+    const skipLink = document.getElementById('skip-link');
+    if (skipLink) {
+        skipLink.addEventListener('click', skipEditor);
+        skipLink.addEventListener('touchstart', skipEditor);
+    }
+
+    // Enter key in input
+    const passwordInput = document.getElementById('editor-password');
+    if (passwordInput) {
+        passwordInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault(); // prevent any default behavior
+                checkEditorAccess();
             }
-        }
+        });
+        passwordInput.focus(); // auto focus on load
+    }
 
-        function skipEditor() {
-            document.getElementById('editor-prompt').style.display = 'none';
-            document.getElementById('editor-status').textContent = '目前模式：觀看模式（只能瀏覽）';
-            showSuccess('以觀看模式進入');
-            document.body.style.overflow = '';
-        }
+    // Lock scroll while prompt is visible
+    document.body.style.overflow = 'hidden';
+});
 
         async function addToTryRestaurant(event) {
             event.preventDefault();
@@ -1149,3 +1186,4 @@
                         ${r.notes ? `<p><strong>備註：</strong><br>${r.notes}</p>` : ''}
                     </div>
                     
+
