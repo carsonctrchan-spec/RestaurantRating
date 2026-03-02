@@ -483,15 +483,15 @@
 <body>
 
     <!-- Editor Password Prompt -->
-    <div id="editor-prompt">
-        <div id="editor-box">
-            <h2>編輯權限驗證</h2>
-            <p>輸入密碼才能新增、編輯、刪除或標記已造訪</p>
-            <input type="password" id="editor-password" placeholder="輸入密碼">
-            <button onclick="checkEditorAccess()">確認</button>
-            <div id="skip-btn" onclick="skipEditor()">我只想觀看 →</div>
-        </div>
+<div id="editor-prompt" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);display:flex;align-items:center;justify-content:center;z-index:9999;">
+    <div style="background:var(--light);padding:32px;border-radius:16px;text-align:center;max-width:400px;box-shadow:0 12px 40px rgba(0,0,0,0.4);">
+        <h2 style="margin-bottom:16px;color:var(--coral);">編輯權限驗證</h2>
+        <p style="margin-bottom:20px;color:var(--text);">輸入密碼才能新增、編輯、刪除或標記已造訪</p>
+        <input type="password" id="editor-password" placeholder="輸入密碼" style="padding:12px;width:100%;margin-bottom:16px;border:2px solid var(--gray);border-radius:8px;font-size:1rem;">
+        <button onclick="checkEditorAccess()" style="padding:12px 40px;background:var(--coral);color:white;border:none;border-radius:8px;font-size:1rem;cursor:pointer;">確認</button>
+        <div onclick="skipEditor()" style="margin-top:16px;font-size:0.95rem;color:var(--gray);cursor:pointer;text-decoration:underline;">我只想觀看 →</div>
     </div>
+</div>
 
     <header>
         <h1><i class="fas fa-utensils"></i> Restaurant Manager</h1>
@@ -768,26 +768,45 @@
         // ────────────────────────────────────────────────
         //  Editor password protection (Option 1)
         // ────────────────────────────────────────────────
-        let isEditor = false;
-        const EDITOR_PASSWORD = "ilymy";  // ← 改成你想要的密碼，並告訴信任的朋友
+       // Editor password protection
+let isEditor = false;
+const EDITOR_PASSWORD = "ilymy";  // ← 改成你想要的密碼
 
-        function checkEditorAccess() {
-            const input = document.getElementById('editor-password').value.trim();
-            if (input === EDITOR_PASSWORD) {
-                isEditor = true;
-                document.getElementById('editor-prompt').style.display = 'none';
-                document.getElementById('editor-status').textContent = '目前模式：編輯模式（可新增/修改/刪除）';
-                showSuccess('已獲得編輯權限！');
-            } else {
-                alert('密碼錯誤，請再試一次');
+function checkEditorAccess() {
+    const input = document.getElementById('editor-password');
+    if (!input) return;
+    
+    const value = input.value.trim();
+    if (value === EDITOR_PASSWORD) {
+        isEditor = true;
+        document.getElementById('editor-prompt').style.display = 'none';
+        document.getElementById('editor-status').textContent = '目前模式：編輯模式（可新增/修改/刪除）';
+        showSuccess('已獲得編輯權限！');
+    } else {
+        alert('密碼錯誤，請再試一次');
+        input.value = '';
+        input.focus();
+    }
+}
+
+// Allow pressing Enter to submit
+document.addEventListener('DOMContentLoaded', () => {
+    const passwordInput = document.getElementById('editor-password');
+    if (passwordInput) {
+        passwordInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                checkEditorAccess();
             }
-        }
+        });
+        passwordInput.focus(); // auto focus on load
+    }
+});
 
-        function skipEditor() {
-            document.getElementById('editor-prompt').style.display = 'none';
-            document.getElementById('editor-status').textContent = '目前模式：觀看模式（只能瀏覽）';
-            showSuccess('以觀看模式進入');
-        }
+function skipEditor() {
+    document.getElementById('editor-prompt').style.display = 'none';
+    document.getElementById('editor-status').textContent = '目前模式：觀看模式（只能瀏覽）';
+    showSuccess('以觀看模式進入');
+}
 
         // ────────────────────────────────────────────────
         //  Protect only write/modify/delete actions
@@ -1208,5 +1227,6 @@
     </script>
 </body>
 </html>
+
 
 
