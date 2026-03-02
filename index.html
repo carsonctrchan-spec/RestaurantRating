@@ -1,11 +1,3 @@
-<div id="auth-prompt" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);display:flex;align-items:center;justify-content:center;z-index:9999;">
-    <div style="background:white;padding:30px;border-radius:10px;text-align:center;max-width:400px;">
-        <h2>需要編輯權限</h2>
-        <p>輸入編輯密碼（僅限朋友）</p>
-        <input type="password" id="editor-password" placeholder="輸入密碼" style="padding:10px;width:100%;margin:15px 0;">
-        <button onclick="checkEditor()" style="padding:10px 30px;background:#FF6B6B;color:white;border:none;border-radius:8px;cursor:pointer;">確認</button>
-    </div>
-</div>
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
@@ -450,37 +442,79 @@
             border-top: 2px solid rgba(255, 107, 107, 0.1);
             color: var(--gray);
         }
-
         /* 僅輕微手機優化 — 保持原來美觀 */
         @media (max-width: 768px) {
-            .form-grid {
-                grid-template-columns: 1fr;
-            }
-            .cards-grid {
-                grid-template-columns: 1fr;
-            }
-            .tabs {
-                flex-direction: column;
-            }
-            .controls-bar {
-                flex-direction: column;
-            }
-            .search-box {
-                width: 100%;
-            }
-            .rating-breakdown {
-                grid-template-columns: 1fr;
-            }
-            .modal-content {
-                padding: 25px;
-            }
-            .card-badges {
-                gap: 6px;
-            }
+            .form-grid { grid-template-columns: 1fr; }
+            .cards-grid { grid-template-columns: 1fr; }
+            .tabs { flex-direction: column; }
+            .controls-bar { flex-direction: column; }
+            .search-box { width: 100%; }
+            .rating-breakdown { grid-template-columns: 1fr; }
+            .modal-content { padding: 25px; }
+            .card-badges { gap: 6px; }
+        }
+
+        /* Editor prompt style */
+        #editor-prompt {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+        #editor-box {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+            max-width: 380px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        #editor-box h2 { margin-bottom: 16px; color: var(--coral); }
+        #editor-box p { margin-bottom: 20px; }
+        #editor-password {
+            padding: 12px;
+            width: 100%;
+            margin-bottom: 16px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+        #editor-box button {
+            padding: 12px 32px;
+            background: var(--coral);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+        #editor-box button:hover { background: #e55a5a; }
+        #skip-btn {
+            margin-top: 16px;
+            font-size: 0.9rem;
+            color: #777;
+            cursor: pointer;
+            text-decoration: underline;
         }
     </style>
 </head>
 <body>
+
+    <!-- Editor Password Prompt -->
+    <div id="editor-prompt">
+        <div id="editor-box">
+            <h2>編輯權限驗證</h2>
+            <p>輸入密碼才能新增、編輯或刪除餐廳</p>
+            <input type="password" id="editor-password" placeholder="輸入密碼">
+            <button onclick="checkEditorAccess()">確認</button>
+            <div id="skip-btn" onclick="skipEditor()">我只想觀看 →</div>
+        </div>
+    </div>
+
     <header>
         <h1><i class="fas fa-utensils"></i> Restaurant Manager</h1>
         <p>多人即時共享美食之旅 | Real-time Shared Culinary Journey</p>
@@ -516,7 +550,7 @@
         </div>
 
         <!-- 想嘗試的餐廳 -->
-<div id="to-try-tab" class="tab-content active">
+        <div id="to-try-tab" class="tab-content active">
             <div class="form-section">
                 <h2><i class="fas fa-plus-circle"></i> 新增想嘗試的餐廳</h2>
                 <form id="to-try-form" onsubmit="addToTryRestaurant(event)">
@@ -606,122 +640,14 @@
             <div id="to-try-list" class="cards-grid"></div>
         </div>
 
-        <!-- 餐廳評分 -->
-      <div id="rating-tab" class="tab-content">
-            <div class="form-section">
-                <h2><i class="fas fa-star"></i> 新增餐廳評分</h2>
-                <form id="rating-form" onsubmit="addRating(event)">
-                    <div class="form-grid">
-                        <div class="form-group"><label>餐廳名稱 *</label><input type="text" name="name" required placeholder="輸入餐廳名稱"></div>
-                        <div class="form-group"><label>料理類型</label><select name="cuisine">
-                            <option value="Italian">義式料理 (Italian)</option>
-                            <option value="Japanese">日式料理 (Japanese)</option>
-                            <option value="Chinese">中式料理 (Chinese)</option>
-                            <option value="French">法式料理 (French)</option>
-                            <option value="Thai">泰式料理 (Thai)</option>
-                            <option value="Korean">韓式料理 (Korean)</option>
-                            <option value="American">美式料理 (American)</option>
-                            <option value="Mexican">墨西哥料理 (Mexican)</option>
-                            <option value="Indian">印度料理 (Indian)</option>
-                            <option value="Fusion">Fusion</option>
-                            <option value="Western">Western</option>
-                            <option value="Drinks">Drinks</option>
-                            <option value="Cafe">咖啡廳 (Cafe)</option>
-                            <option value="Dessert">甜品 (Dessert)</option>
-                            <option value="SmallBites">小食 (Small Bites)</option>
-                            <option value="Other">其他 (Other)</option>
-                        </select></div>
-                        <div class="form-group"><label>地區</label><select name="region">
-                            <option value="Kowloon">九龍</option>
-                            <option value="New Territories">新界</option>
-                            <option value="Hong Kong Island">港島</option>
-                        </select></div>
-                        <div class="form-group"><label>地點/地址</label><input type="text" name="location" placeholder="輸入餐廳地址"></div>
-                        <div class="form-group"><label>造訪日期</label><input type="date" name="visit-date"></div>
-                        <div class="form-group"><label>實付金額</label><select name="price-paid">
-                            <option value="Below HK$50">Below HK$50</option>
-                            <option value="HK$50-HK$100">HK$50-HK$100</option>
-                            <option value="HK$100-HK$200">HK$100-HK$200</option>
-                            <option value="HK$200-HK$400">HK$200-HK$400</option>
-                            <option value="HK$400-HK$800">HK$400-HK$800</option>
-                            <option value="Above HK$800">Above HK$800</option>
-                        </select></div>
-                        <div class="form-group"><label>是否會再次光臨？</label><select name="would-return">
-                            <option value="definitely">絕對會 (Definitely)</option>
-                            <option value="maybe">可能會 (Maybe)</option>
-                            <option value="probably-not">可能不會 (Probably Not)</option>
-                            <option value="never">絕不會 (Never)</option>
-                        </select></div>
-                    </div>
-                    <div class="form-grid">
-                        <div class="form-group"><label>整體評分</label><div class="star-rating" data-rating="overall"><i class="far fa-star" data-value="1"></i><i class="far fa-star" data-value="2"></i><i class="far fa-star" data-value="3"></i><i class="far fa-star" data-value="4"></i><i class="far fa-star" data-value="5"></i></div><input type="hidden" name="overall-rating" value="0"></div>
-                        <div class="form-group"><label>食物品質</label><div class="star-rating" data-rating="food"><i class="far fa-star" data-value="1"></i><i class="far fa-star" data-value="2"></i><i class="far fa-star" data-value="3"></i><i class="far fa-star" data-value="4"></i><i class="far fa-star" data-value="5"></i></div><input type="hidden" name="food-rating" value="0"></div>
-                        <div class="form-group"><label>服務品質</label><div class="star-rating" data-rating="service"><i class="far fa-star" data-value="1"></i><i class="far fa-star" data-value="2"></i><i class="far fa-star" data-value="3"></i><i class="far fa-star" data-value="4"></i><i class="far fa-star" data-value="5"></i></div><input type="hidden" name="service-rating" value="0"></div>
-                        <div class="form-group"><label>環境氛圍</label><div class="star-rating" data-rating="ambiance"><i class="far fa-star" data-value="1"></i><i class="far fa-star" data-value="2"></i><i class="far fa-star" data-value="3"></i><i class="far fa-star" data-value="4"></i><i class="far fa-star" data-value="5"></i></div><input type="hidden" name="ambiance-rating" value="0"></div>
-                        <div class="form-group"><label>CP值</label><div class="star-rating" data-rating="value"><i class="far fa-star" data-value="1"></i><i class="far fa-star" data-value="2"></i><i class="far fa-star" data-value="3"></i><i class="far fa-star" data-value="4"></i><i class="far fa-star" data-value="5"></i></div><input type="hidden" name="value-rating" value="0"></div>
-                    </div>
-                    <div class="form-group"><label>點餐內容</label><textarea name="dishes" placeholder="列出您點的餐點"></textarea></div>
-                    <div class="form-group"><label>整體評價</label><textarea name="review" placeholder="詳細的用餐體驗評價"></textarea></div>
-                    <button type="submit" class="submit-btn"><i class="fas fa-star"></i><span>新增評分</span></button>
-                </form>
-            </div>
-
-            <div class="controls-bar">
-                <div class="search-box"><i class="fas fa-search"></i><input type="text" id="search-rating" placeholder="搜尋餐廳..." oninput="filterRatings()"></div>
-                <select class="filter-select" id="filter-cuisine-rating" onchange="filterRatings()">
-                    <option value="">所有料理類型</option>
-                    <option value="Italian">義式料理</option>
-                    <option value="Japanese">日式料理</option>
-                    <option value="Chinese">中式料理</option>
-                    <option value="French">法式料理</option>
-                    <option value="Thai">泰式料理</option>
-                    <option value="Korean">韓式料理</option>
-                    <option value="American">美式料理</option>
-                    <option value="Mexican">墨西哥料理</option>
-                    <option value="Indian">印度料理</option>
-                    <option value="Fusion">Fusion</option>
-                    <option value="Western">Western</option>
-                    <option value="Drinks">Drinks</option>
-                    <option value="Cafe">咖啡廳</option>
-                    <option value="Dessert">甜品</option>
-                    <option value="SmallBites">小食</option>
-                    <option value="Other">其他</option>
-                </select>
-                <select class="filter-select" id="filter-region-rating" onchange="filterRatings()">
-                    <option value="">所有地區</option>
-                    <option value="Kowloon">九龍</option>
-                    <option value="New Territories">新界</option>
-                    <option value="Hong Kong Island">港島</option>
-                </select>
-                <select class="filter-select" id="sort-rating" onchange="filterRatings()">
-                    <option value="date-desc">最新造訪</option>
-                    <option value="date-asc">最早造訪</option>
-                    <option value="rating-high">評分：高到低</option>
-                    <option value="rating-low">評分：低到高</option>
-                    <option value="name-asc">名稱 A-Z</option>
-                    <option value="name-desc">名稱 Z-A</option>
-                </select>
-            </div>
-
-            <div id="rating-list" class="cards-grid"></div>
+        <!-- 餐廳評分 (內容略，保持原樣) -->
+        <div id="rating-tab" class="tab-content">
+            <!-- 原有評分表單與列表內容保持不變 -->
+            <!-- ... (省略以節省空間，請保留你原本的評分部分) ... -->
         </div>
     </div>
 
-    <div id="review-modal" class="modal">
-        <div class="modal-content">
-            <button class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></button>
-            <div id="modal-body"></div>
-        </div>
-    </div>
-
-    <div id="success-message" class="success-message">
-        <i class="fas fa-check-circle"></i>
-        <span id="success-text"></span>
-    </div>
-
-    <footer>
-        <p>Restaurant Manager - Real-time Shared • Powered by Firebase & GitHub Pages</p>
-    </footer>
+    <!-- modal, success-message, footer 保持不變 -->
 
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
@@ -729,14 +655,14 @@
 
     <script>
         // ==================== 請填入你的 Firebase 設定 ====================
-const firebaseConfig = {
-  apiKey: "AIzaSyBey2Q0-XbfaGoL9sB8zYLtDlVZchvT8pQ",
-  authDomain: "restaurant-3bc1b.firebaseapp.com",
-  projectId: "restaurant-3bc1b",
-  storageBucket: "restaurant-3bc1b.firebasestorage.app",
-  messagingSenderId: "713315038698",
-  appId: "1:713315038698:web:906be6f660642c6eeb2e93",
-};
+        const firebaseConfig = {
+          apiKey: "AIzaSyBey2Q0-XbfaGoL9sB8zYLtDlVZchvT8pQ",
+          authDomain: "restaurant-3bc1b.firebaseapp.com",
+          projectId: "restaurant-3bc1b",
+          storageBucket: "restaurant-3bc1b.firebasestorage.app",
+          messagingSenderId: "713315038698",
+          appId: "1:713315038698:web:906be6f660642c6eeb2e93",
+        };
 
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
@@ -748,6 +674,180 @@ const firebaseConfig = {
         let ratedRestaurants = [];
         let editingToTryId = null;
         let editingRatingId = null;
+
+        // ────────────────────────────────────────────────
+        //  編輯權限密碼保護 (Option 1)
+        // ────────────────────────────────────────────────
+        let isEditor = false;
+        const EDITOR_PASSWORD = "friends2026";  // ← 請改成你想要的密碼，並告訴信任的朋友
+
+        function checkEditorAccess() {
+            const input = document.getElementById('editor-password').value.trim();
+            if (input === EDITOR_PASSWORD) {
+                isEditor = true;
+                document.getElementById('editor-prompt').style.display = 'none';
+                showSuccess('已獲得編輯權限！現在可以新增/修改/刪除餐廳。');
+            } else {
+                alert('密碼錯誤，請再試一次');
+            }
+        }
+
+        function skipEditor() {
+            document.getElementById('editor-prompt').style.display = 'none';
+            showSuccess('以觀看模式進入（只能瀏覽清單）');
+        }
+
+        // ────────────────────────────────────────────────
+        //  以下所有寫入/修改/刪除函數都加上權限檢查
+        // ────────────────────────────────────────────────
+
+        async function addToTryRestaurant(event) {
+            event.preventDefault();
+            if (!isEditor) {
+                alert('只有持有密碼的編輯者可以新增餐廳');
+                return;
+            }
+            const f = event.target;
+            const data = {
+                name: f.name.value.trim(),
+                cuisine: f.cuisine.value,
+                region: f.region.value,
+                location: f.location.value.trim(),
+                price: f.price.value,
+                recommendedBy: f['recommended-by'].value.trim(),
+                reason: f.reason.value.trim(),
+                priority: f.priority.value,
+                moreInfo: f['more-info'].value.trim(),
+                notes: f.notes.value.trim(),
+                dateAdded: editingToTryId ? toTryRestaurants.find(r => r.id === editingToTryId)?.dateAdded || firebase.firestore.FieldValue.serverTimestamp() : firebase.firestore.FieldValue.serverTimestamp()
+            };
+            try {
+                if (editingToTryId) {
+                    await toTryRef.doc(editingToTryId).update(data);
+                    showSuccess('已更新餐廳資訊');
+                    editingToTryId = null;
+                } else {
+                    await toTryRef.add(data);
+                    showSuccess('已新增想嘗試的餐廳');
+                }
+                f.reset();
+            } catch (e) { console.error(e); alert('儲存失敗，請檢查 Firebase 設定'); }
+        }
+
+        async function addRating(event) {
+            event.preventDefault();
+            if (!isEditor) {
+                alert('只有持有密碼的編輯者可以新增評分');
+                return;
+            }
+            const f = event.target;
+            const data = {
+                name: f.name.value.trim(),
+                cuisine: f.cuisine.value,
+                region: f.region.value,
+                location: f.location.value.trim(),
+                visitDate: f['visit-date'].value || null,
+                pricePaid: f['price-paid'].value,
+                wouldReturn: f['would-return'].value,
+                dishes: f.dishes.value.trim(),
+                review: f.review.value.trim(),
+                overallRating: parseInt(f['overall-rating'].value) || 0,
+                foodRating: parseInt(f['food-rating'].value) || 0,
+                serviceRating: parseInt(f['service-rating'].value) || 0,
+                ambianceRating: parseInt(f['ambiance-rating'].value) || 0,
+                valueRating: parseInt(f['value-rating'].value) || 0,
+                dateAdded: editingRatingId ? ratedRestaurants.find(r => r.id === editingRatingId)?.dateAdded || firebase.firestore.FieldValue.serverTimestamp() : firebase.firestore.FieldValue.serverTimestamp()
+            };
+            try {
+                if (editingRatingId) {
+                    await ratedRef.doc(editingRatingId).update(data);
+                    showSuccess('評分已更新');
+                    editingRatingId = null;
+                } else {
+                    await ratedRef.add(data);
+                    showSuccess('已新增餐廳評分');
+                }
+                f.reset();
+                document.querySelectorAll('.star-rating i').forEach(i => { i.classList.remove('fas','active'); i.classList.add('far'); });
+                document.querySelectorAll('input[name$="-rating"]').forEach(i => i.value = '0');
+            } catch (e) { console.error(e); alert('儲存失敗，請檢查 Firebase 設定'); }
+        }
+
+        async function deleteToTry(id) {
+            if (!isEditor) {
+                alert('只有持有密碼的編輯者可以刪除餐廳');
+                return;
+            }
+            if (confirm('確定刪除這家餐廳？')) {
+                await toTryRef.doc(id).delete();
+                showSuccess('已刪除');
+            }
+        }
+
+        async function deleteRating(id) {
+            if (!isEditor) {
+                alert('只有持有密碼的編輯者可以刪除評分');
+                return;
+            }
+            if (confirm('確定刪除這筆評分？')) {
+                await ratedRef.doc(id).delete();
+                showSuccess('已刪除');
+            }
+        }
+
+        function editToTry(id) {
+            if (!isEditor) {
+                alert('只有持有密碼的編輯者可以編輯');
+                return;
+            }
+            const r = toTryRestaurants.find(x => x.id === id);
+            if (!r) return;
+            editingToTryId = id;
+            const f = document.getElementById('to-try-form');
+            f.name.value = r.name; f.cuisine.value = r.cuisine; f.region.value = r.region || 'Kowloon';
+            f.location.value = r.location || ''; f.price.value = r.price; f['recommended-by'].value = r.recommendedBy || '';
+            f.reason.value = r.reason || ''; f.priority.value = r.priority; f['more-info'].value = r.moreInfo || ''; f.notes.value = r.notes || '';
+            f.scrollIntoView({behavior:'smooth'});
+        }
+
+        function editRating(id) {
+            if (!isEditor) {
+                alert('只有持有密碼的編輯者可以編輯');
+                return;
+            }
+            const r = ratedRestaurants.find(x => x.id === id);
+            if (!r) return;
+            editingRatingId = id;
+            const f = document.getElementById('rating-form');
+            f.name.value = r.name; f.cuisine.value = r.cuisine; f.region.value = r.region || 'Kowloon';
+            f.location.value = r.location || ''; f['visit-date'].value = r.visitDate || ''; f['price-paid'].value = r.pricePaid;
+            f['would-return'].value = r.wouldReturn; f.dishes.value = r.dishes || ''; f.review.value = r.review || '';
+            ['overall','food','service','ambiance','value'].forEach(t => {
+                const val = r[`${t}Rating`] || 0;
+                f[`${t}-rating`].value = val;
+                updateStars(f.querySelectorAll(`.star-rating[data-rating="${t}"] i`), val);
+            });
+            f.scrollIntoView({behavior:'smooth'});
+        }
+
+        function markAsVisited(id) {
+            if (!isEditor) {
+                alert('只有持有密碼的編輯者可以標記已造訪');
+                return;
+            }
+            const r = toTryRestaurants.find(x => x.id === id);
+            if (!r) return;
+            switchTab('rating');
+            const f = document.getElementById('rating-form');
+            f.name.value = r.name; f.cuisine.value = r.cuisine; f.region.value = r.region || 'Kowloon';
+            f.location.value = r.location || ''; f['visit-date'].value = new Date().toISOString().split('T')[0];
+            f.scrollIntoView({behavior:'smooth'});
+            deleteToTry(id);
+        }
+
+        // ────────────────────────────────────────────────
+        //  以下為你原本的函數（render, loadData 等）保持不變
+        // ────────────────────────────────────────────────
 
         function loadData() {
             toTryRef.orderBy('dateAdded', 'desc').onSnapshot(snapshot => {
@@ -791,71 +891,7 @@ const firebaseConfig = {
             });
         }
 
-        async function addToTryRestaurant(event) {
-            event.preventDefault();
-            const f = event.target;
-            const data = {
-                name: f.name.value.trim(),
-                cuisine: f.cuisine.value,
-                region: f.region.value,
-                location: f.location.value.trim(),
-                price: f.price.value,
-                recommendedBy: f['recommended-by'].value.trim(),
-                reason: f.reason.value.trim(),
-                priority: f.priority.value,
-                moreInfo: f['more-info'].value.trim(),
-                notes: f.notes.value.trim(),
-                dateAdded: editingToTryId ? toTryRestaurants.find(r => r.id === editingToTryId)?.dateAdded || firebase.firestore.FieldValue.serverTimestamp() : firebase.firestore.FieldValue.serverTimestamp()
-            };
-            try {
-                if (editingToTryId) {
-                    await toTryRef.doc(editingToTryId).update(data);
-                    showSuccess('已更新餐廳資訊');
-                    editingToTryId = null;
-                } else {
-                    await toTryRef.add(data);
-                    showSuccess('已新增想嘗試的餐廳');
-                }
-                f.reset();
-            } catch (e) { console.error(e); alert('儲存失敗，請檢查 Firebase 設定'); }
-        }
-
-        async function addRating(event) {
-            event.preventDefault();
-            const f = event.target;
-            const data = {
-                name: f.name.value.trim(),
-                cuisine: f.cuisine.value,
-                region: f.region.value,
-                location: f.location.value.trim(),
-                visitDate: f['visit-date'].value || null,
-                pricePaid: f['price-paid'].value,
-                wouldReturn: f['would-return'].value,
-                dishes: f.dishes.value.trim(),
-                review: f.review.value.trim(),
-                overallRating: parseInt(f['overall-rating'].value) || 0,
-                foodRating: parseInt(f['food-rating'].value) || 0,
-                serviceRating: parseInt(f['service-rating'].value) || 0,
-                ambianceRating: parseInt(f['ambiance-rating'].value) || 0,
-                valueRating: parseInt(f['value-rating'].value) || 0,
-                dateAdded: editingRatingId ? ratedRestaurants.find(r => r.id === editingRatingId)?.dateAdded || firebase.firestore.FieldValue.serverTimestamp() : firebase.firestore.FieldValue.serverTimestamp()
-            };
-            try {
-                if (editingRatingId) {
-                    await ratedRef.doc(editingRatingId).update(data);
-                    showSuccess('評分已更新');
-                    editingRatingId = null;
-                } else {
-                    await ratedRef.add(data);
-                    showSuccess('已新增餐廳評分');
-                }
-                f.reset();
-                document.querySelectorAll('.star-rating i').forEach(i => { i.classList.remove('fas','active'); i.classList.add('far'); });
-                document.querySelectorAll('input[name$="-rating"]').forEach(i => i.value = '0');
-            } catch (e) { console.error(e); alert('儲存失敗，請檢查 Firebase 設定'); }
-        }
-
- function renderToTryList() {
+        function renderToTryList() {
             const container = document.getElementById('to-try-list');
             const search = document.getElementById('search-to-try').value.toLowerCase();
             const cuisine = document.getElementById('filter-cuisine-to-try').value;
@@ -891,11 +927,11 @@ const firebaseConfig = {
                         <span class="badge badge-region"><i class="fas fa-map"></i> ${r.region === 'Kowloon' ? '九龍' : r.region === 'New Territories' ? '新界' : '港島'}</span>
                         <span class="badge-priority ${r.priority}"><i class="fas fa-flag"></i> ${r.priority==='high'?'高':r.priority==='medium'?'中':'低'}優先</span>
                     </div>
-                   <div class="card-info">
-    ${r.location ? `<p><i class="fas fa-map-marker-alt"></i> ${r.location}</p>` : ''}
-    ${r.recommendedBy ? `<p><i class="fas fa-user"></i> 推薦人：${r.recommendedBy}</p>` : ''}
-    ${r.moreInfo ? `<p><i class="fas fa-link"></i> <a href="${r.moreInfo}" target="_blank" rel="noopener">連結</a></p>` : ''}
-</div>
+                    <div class="card-info">
+                        ${r.location ? `<p><i class="fas fa-map-marker-alt"></i> ${r.location}</p>` : ''}
+                        ${r.recommendedBy ? `<p><i class="fas fa-user"></i> 推薦人：${r.recommendedBy}</p>` : ''}
+                        ${r.moreInfo ? `<p><i class="fas fa-link"></i> <a href="${r.moreInfo}" target="_blank" rel="noopener">連結</a></p>` : ''}
+                    </div>
                     <div id="to-try-${r.id}" class="comment-section">
                         ${r.reason ? `<p><strong>想嘗試的原因：</strong><br>${r.reason}</p>` : ''}
                         ${r.notes ? `<p><strong>備註：</strong><br>${r.notes}</p>` : ''}
@@ -909,186 +945,8 @@ const firebaseConfig = {
             `).join('');
         }
 
-        function renderRatingList() {
-            const container = document.getElementById('rating-list');
-            const search = document.getElementById('search-rating').value.toLowerCase();
-            const cuisine = document.getElementById('filter-cuisine-rating').value;
-            const region = document.getElementById('filter-region-rating').value;
-            const sort = document.getElementById('sort-rating').value;
-
-            let list = ratedRestaurants.filter(r => 
-                (r.name.toLowerCase().includes(search) || (r.location?.toLowerCase().includes(search))) &&
-                (!cuisine || r.cuisine === cuisine) &&
-                (!region || r.region === region)
-            );
-
-            list.sort((a,b) => {
-                const aTime = a.visitDate || a.dateAdded?.seconds || 0;
-                const bTime = b.visitDate || b.dateAdded?.seconds || 0;
-                if (sort === 'date-desc') return bTime - aTime;
-                if (sort === 'date-asc') return aTime - bTime;
-                if (sort === 'rating-high') return b.overallRating - a.overallRating;
-                if (sort === 'rating-low') return a.overallRating - b.overallRating;
-                if (sort === 'name-asc') return a.name.localeCompare(b.name);
-                if (sort === 'name-desc') return b.name.localeCompare(a.name);
-                return 0;
-            });
-
-            if (list.length === 0) {
-                container.innerHTML = `<div class="empty-state"><i class="fas fa-star"></i><h3>還沒有評分記錄</h3><p>開始記錄用餐體驗吧！</p></div>`;
-                return;
-            }
-
-            container.innerHTML = list.map(r => `
-                <div class="restaurant-card" onclick="toggleComment('rating-${r.id}')">
-                    <div class="card-header"><h3>${r.name}</h3></div>
-                    <div class="rating-display">
-                        <div class="rating-stars">${generateStars(r.overallRating)}</div>
-                        <span class="rating-value">${r.overallRating}.0 / 5.0</span>
-                    </div>
-                    <div class="card-badges">
-                        <span class="badge badge-cuisine"><i class="fas fa-utensils"></i> ${r.cuisine}</span>
-                        <span class="badge badge-region"><i class="fas fa-map"></i> ${r.region === 'Kowloon' ? '九龍' : r.region === 'New Territories' ? '新界' : '港島'}</span>
-                        ${r.visitDate ? `<span class="badge badge-price"><i class="fas fa-calendar"></i> ${new Date(r.visitDate).toLocaleDateString('zh-TW')}</span>` : ''}
-                    </div>
-                    <div class="card-info">
-                        ${r.location ? `<p><i class="fas fa-map-marker-alt"></i> ${r.location}</p>` : ''}
-                        <p><i class="fas fa-dollar-sign"></i> 實付：${r.pricePaid}</p>
-                    </div>
-                    <div id="rating-${r.id}" class="comment-section">
-                        ${r.dishes ? `<p><strong>點餐內容：</strong><br>${r.dishes}</p>` : ''}
-                        ${r.review ? `<p><strong>整體評價：</strong><br>${r.review}</p>` : ''}
-                    </div>
-                    <div class="card-actions">
-                        <button class="btn btn-primary" onclick="event.stopPropagation(); viewFullReview('${r.id}')"><i class="fas fa-eye"></i> 完整評價</button>
-                        <button class="btn btn-secondary" onclick="event.stopPropagation(); editRating('${r.id}')"><i class="fas fa-edit"></i> 編輯</button>
-                        <button class="btn btn-danger" onclick="event.stopPropagation(); deleteRating('${r.id}')"><i class="fas fa-trash"></i> 刪除</button>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function toggleComment(id) {
-            const el = document.getElementById(id);
-            if (el) el.classList.toggle('active');
-        }
-
-        function generateStars(n) {
-            return Array(5).fill().map((_,i) => i < n ? '<i class="fas fa-star"></i>' : '<i class="far fa-star"></i>').join('');
-        }
-
-        async function deleteToTry(id) { if (confirm('確定刪除？')) await toTryRef.doc(id).delete(); }
-        async function deleteRating(id) { if (confirm('確定刪除？')) await ratedRef.doc(id).delete(); }
-
-        function editToTry(id) {
-            const r = toTryRestaurants.find(x => x.id === id);
-            if (!r) return;
-            editingToTryId = id;
-            const f = document.getElementById('to-try-form');
-            f.name.value = r.name; f.cuisine.value = r.cuisine; f.region.value = r.region || 'Kowloon';
-            f.location.value = r.location || ''; f.price.value = r.price; f['recommended-by'].value = r.recommendedBy || '';
-            f.reason.value = r.reason || ''; f.priority.value = r.priority; f['more-info'].value = r.moreInfo || ''; f.notes.value = r.notes || '';
-            f.scrollIntoView({behavior:'smooth'});
-        }
-
-        function editRating(id) {
-            const r = ratedRestaurants.find(x => x.id === id);
-            if (!r) return;
-            editingRatingId = id;
-            const f = document.getElementById('rating-form');
-            f.name.value = r.name; f.cuisine.value = r.cuisine; f.region.value = r.region || 'Kowloon';
-            f.location.value = r.location || ''; f['visit-date'].value = r.visitDate || ''; f['price-paid'].value = r.pricePaid;
-            f['would-return'].value = r.wouldReturn; f.dishes.value = r.dishes || ''; f.review.value = r.review || '';
-            ['overall','food','service','ambiance','value'].forEach(t => {
-                const val = r[`${t}Rating`] || 0;
-                f[`${t}-rating`].value = val;
-                updateStars(f.querySelectorAll(`.star-rating[data-rating="${t}"] i`), val);
-            });
-            f.scrollIntoView({behavior:'smooth'});
-        }
-
-        function markAsVisited(id) {
-            const r = toTryRestaurants.find(x => x.id === id);
-            if (!r) return;
-            switchTab('rating');
-            const f = document.getElementById('rating-form');
-            f.name.value = r.name; f.cuisine.value = r.cuisine; f.region.value = r.region || 'Kowloon';
-            f.location.value = r.location || ''; f['visit-date'].value = new Date().toISOString().split('T')[0];
-            f.scrollIntoView({behavior:'smooth'});
-            deleteToTry(id);
-        }
-
-        function viewFullReview(id) {
-            const r = ratedRestaurants.find(x => x.id === id);
-            if (!r) return;
-            document.getElementById('modal-body').innerHTML = `
-                <h2 style="color:var(--coral);margin-bottom:20px;">${r.name}</h2>
-                <div class="rating-display" style="margin-bottom:20px;">
-                    <div class="rating-stars">${generateStars(r.overallRating)}</div>
-                    <span class="rating-value">${r.overallRating}.0 / 5.0</span>
-                </div>
-                <p><strong>地區：</strong>${r.region === 'Kowloon' ? '九龍' : r.region === 'New Territories' ? '新界' : '港島'}</p>
-                ${r.location ? `<p><strong>地址：</strong>${r.location}</p>` : ''}
-                <p><strong>實付：</strong>${r.pricePaid}</p>
-                ${r.review ? `<p style="white-space:pre-wrap;margin-top:20px;"><strong>整體評價：</strong><br>${r.review}</p>` : ''}
-                ${r.dishes ? `<p style="margin-top:20px;"><strong>點餐內容：</strong><br>${r.dishes}</p>` : ''}
-            `;
-            document.getElementById('review-modal').classList.add('active');
-        }
-
-        function closeModal() { document.getElementById('review-modal').classList.remove('active'); }
-        function filterToTry() { renderToTryList(); }
-        function filterRatings() { renderRatingList(); }
-
-        function switchTab(tab) {
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-            if (tab === 'to-try') {
-                document.querySelector('.tab:first-child').classList.add('active');
-                document.getElementById('to-try-tab').classList.add('active');
-            } else {
-                document.querySelector('.tab:last-child').classList.add('active');
-                document.getElementById('rating-tab').classList.add('active');
-            }
-        }
-
-        function updateStats() {
-            document.getElementById('stat-to-try').textContent = toTryRestaurants.length;
-            document.getElementById('stat-rated').textContent = ratedRestaurants.length;
-        }
-
-        function showSuccess(msg) {
-            const el = document.getElementById('success-message');
-            document.getElementById('success-text').textContent = msg;
-            el.classList.add('show');
-            setTimeout(() => el.classList.remove('show'), 3000);
-        }
-
-        function toggleTheme() {
-            const root = document.documentElement;
-            const newTheme = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-            root.setAttribute('data-theme', newTheme);
-            localStorage.setItem('theme', newTheme);
-            const span = document.querySelector('.theme-toggle span');
-            const icon = document.querySelector('.theme-toggle i');
-            span.textContent = newTheme === 'dark' ? '淺色模式' : '深色模式';
-            icon.className = newTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
-        }
-
-        async function exportData() {
-            const [toTrySnap, ratedSnap] = await Promise.all([toTryRef.get(), ratedRef.get()]);
-            const data = {
-                toTryRestaurants: toTrySnap.docs.map(d => ({id: d.id, ...d.data()})),
-                ratedRestaurants: ratedSnap.docs.map(d => ({id: d.id, ...d.data()})),
-                exportDate: new Date().toISOString()
-            };
-            const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url; a.download = `restaurant-backup-${new Date().toISOString().slice(0,10)}.json`;
-            a.click(); URL.revokeObjectURL(url);
-            showSuccess('資料已匯出');
-        }
+        // renderRatingList, toggleComment, generateStars, viewFullReview, closeModal, filterToTry, filterRatings, switchTab, updateStats, showSuccess, toggleTheme, exportData 等函數保持原樣
+        // （這裡省略重複貼上，請保留你原本的這些函數）
 
         document.addEventListener('DOMContentLoaded', () => {
             const theme = localStorage.getItem('theme') || 'light';
@@ -1105,38 +963,5 @@ const firebaseConfig = {
             if (e.target.id === 'review-modal') closeModal();
         });
     </script>
-    let isEditor = false;
-const EDITOR_PASSWORD = "your-secret-password-2026"; // 改成你想要的密碼
-
-function checkEditor() {
-    const input = document.getElementById('editor-password').value;
-    if (input === EDITOR_PASSWORD) {
-        isEditor = true;
-        document.getElementById('auth-prompt').style.display = 'none';
-        alert('已獲得編輯權限！');
-    } else {
-        alert('密碼錯誤');
-    }
-}
-
-// 在所有「新增/編輯/刪除」的地方加上檢查
-async function addToTryRestaurant(event) {
-    if (!isEditor) {
-        alert('只有編輯者可以新增餐廳');
-        return;
-    }
-    // ... 原有程式碼 ...
-}
-
-// 同樣對 addRating, deleteToTry, deleteRating, editToTry, editRating, markAsVisited 都加 if (!isEditor) { alert(...); return; }
 </body>
 </html>
-
-
-
-
-
-
-
-
-
