@@ -713,8 +713,7 @@
                         </select></div>
                     </div>
 
-                    <!-- Fixed: 5 stars only with half-star support -->
-                                      <!-- Clean 5 stars with half-star support -->
+                   <!-- 5 visible stars + half-star support (10 icons internally) -->
                     <div class="form-grid">
                         <div class="form-group"><label>整體評分</label>
                             <div class="star-rating" data-rating="overall">
@@ -1112,18 +1111,14 @@
         }
 
         // 5 stars with half-star support
-     function generateStars(n) {
+   function generateStars(n) {
             let html = '';
             const full = Math.floor(n);
             const hasHalf = (n % 1) >= 0.5;
             for (let i = 1; i <= 5; i++) {
-                if (i <= full) {
-                    html += '<i class="fas fa-star"></i>';
-                } else if (i === full + 1 && hasHalf) {
-                    html += '<i class="fas fa-star-half-alt"></i>';
-                } else {
-                    html += '<i class="far fa-star"></i>';
-                }
+                if (i <= full) html += '<i class="fas fa-star"></i>';
+                else if (i === full + 1 && hasHalf) html += '<i class="fas fa-star-half-alt"></i>';
+                else html += '<i class="far fa-star"></i>';
             }
             return html;
         }
@@ -1222,25 +1217,24 @@
             });
         }
 
-        function initializeStarRatings() {
+ function initializeStarRatings() {
             document.querySelectorAll('.star-rating').forEach(container => {
                 const stars = container.querySelectorAll('i');
-                const input = container.parentElement.querySelector('input[type="hidden"]');
                 stars.forEach(star => {
                     star.addEventListener('click', () => {
-                        const value = parseFloat(star.dataset.value);
-                        input.value = value;
-                        updateStars(stars, value);
+                        const value = parseFloat(star.getAttribute('data-value'));
+                        const hiddenInput = container.parentElement.querySelector('input[type="hidden"]');
+                        if (hiddenInput) hiddenInput.value = value;
+                        updateStars(container, value);
                     });
-                    star.addEventListener('mouseenter', () => updateStars(stars, parseFloat(star.dataset.value)));
                 });
-                container.addEventListener('mouseleave', () => updateStars(stars, parseFloat(input.value) || 0));
             });
         }
 
-function updateStars(stars, value) {
-            stars.forEach((star, index) => {
-                const starValue = (index + 1) * 0.5;   // 0.5, 1, 1.5, 2, ..., 5
+function updateStars(starsContainer, value) {
+            const stars = starsContainer.querySelectorAll('i');
+            stars.forEach(star => {
+                const starValue = parseFloat(star.getAttribute('data-value'));
                 if (starValue <= value) {
                     star.classList.remove('far');
                     star.classList.add('fas', 'active');
