@@ -1086,17 +1086,21 @@
         }
 
         // 5 stars with half-star support
-       function generateStars(n) {
-    let html = '';
-    const full = Math.floor(n);
-    const hasHalf = (n % 1) >= 0.5;
-    for (let i = 1; i <= 5; i++) {
-        if (i <= full) html += '<i class="fas fa-star"></i>';
-        else if (i === full + 1 && hasHalf) html += '<i class="fas fa-star-half-alt"></i>';
-        else html += '<i class="far fa-star"></i>';
-    }
-    return html;
-}
+      function generateStars(n) {
+            let html = '';
+            const full = Math.floor(n);
+            const hasHalf = (n % 1) >= 0.5;
+            for (let i = 1; i <= 5; i++) {
+                if (i <= full) {
+                    html += '<i class="fas fa-star"></i>';
+                } else if (i === full + 1 && hasHalf) {
+                    html += '<i class="fas fa-star-half-alt"></i>';
+                } else {
+                    html += '<i class="far fa-star"></i>';
+                }
+            }
+            return html;
+        }
 
         function viewFullReview(id) {
             const r = ratedRestaurants.find(x => x.id === id);
@@ -1208,21 +1212,18 @@
             });
         }
 
-        function updateStars(stars, value) {
-    stars.forEach((star, index) => {
-        const starValue = index + 1;
-        if (starValue <= value) {
-            star.classList.remove('far');
-            star.classList.add('fas', 'active');
-        } else if (starValue - 0.5 <= value && value < starValue) {
-            star.classList.remove('far');
-            star.classList.add('fas', 'active'); // or use half-alt if you want visual half
-        } else {
-            star.classList.remove('fas', 'active');
-            star.classList.add('far');
+function updateStars(stars, value) {
+            stars.forEach((star, index) => {
+                const starValue = (index + 1) * 0.5;   // 0.5, 1, 1.5, ..., 5
+                if (starValue <= value) {
+                    star.classList.remove('far');
+                    star.classList.add('fas', 'active');
+                } else {
+                    star.classList.remove('fas', 'active');
+                    star.classList.add('far');
+                }
+            });
         }
-    });
-}
 
         function renderToTryList() {
             const container = document.getElementById('to-try-list');
