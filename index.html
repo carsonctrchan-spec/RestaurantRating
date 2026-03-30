@@ -184,10 +184,10 @@
         }
         .form-group textarea { resize: vertical; min-height: 100px; }
 
-        /* 5 stars with half-star support */
+        /* 5 stars only with half-star support */
         .star-rating {
             display: flex;
-            gap: 6px;
+            gap: 8px;
             font-size: 1.9rem;
         }
         .star-rating i {
@@ -461,7 +461,7 @@
             color: var(--gray);
         }
 
-        /* Mobile fixes - prevent side overflow */
+        /* Mobile fixes */
         @media (max-width: 768px) {
             .container { padding: 16px; }
             header { padding: 24px 16px; border-radius: 0 0 16px 16px; }
@@ -473,10 +473,7 @@
             .controls-bar { flex-direction: column; gap: 12px; }
             .filter-select { width: 100%; }
             .cards-grid { grid-template-columns: 1fr; }
-            .restaurant-card {
-                padding: 20px;
-                overflow: hidden;
-            }
+            .restaurant-card { padding: 20px; overflow: hidden; }
             .card-badges { flex-wrap: wrap; max-width: 100%; }
             .badge { flex-shrink: 1; white-space: normal; word-break: break-word; }
             .card-info p { word-break: break-all; overflow-wrap: break-word; hyphens: auto; }
@@ -579,6 +576,7 @@
         </div>
 
         <div id="to-try-tab" class="tab-content active">
+            <!-- Your original to-try form and list (unchanged) -->
             <div class="form-section">
                 <h2><i class="fas fa-plus-circle"></i> 新增想嘗試的餐廳</h2>
                 <form id="to-try-form" onsubmit="addToTryRestaurant(event)">
@@ -715,7 +713,7 @@
                         </select></div>
                     </div>
 
-                    <!-- 5 stars with half-star support -->
+                    <!-- Fixed: 5 stars only with half-star support -->
                     <div class="form-grid">
                         <div class="form-group"><label>整體評分</label>
                             <div class="star-rating" data-rating="overall">
@@ -923,9 +921,8 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             const passwordForm = document.getElementById('password-form');
-            if (passwordForm) {
-                passwordForm.addEventListener('submit', handlePasswordSubmit);
-            }
+            if (passwordForm) passwordForm.addEventListener('submit', handlePasswordSubmit);
+
             const skipLink = document.getElementById('skip-link');
             if (skipLink) {
                 skipLink.addEventListener('click', skipEditor);
@@ -1113,7 +1110,7 @@
             if (el) el.classList.toggle('active');
         }
 
-        // Half-star supported generateStars (5 stars only)
+        // 5 stars with half-star support
         function generateStars(n) {
             let stars = '';
             const full = Math.floor(n);
@@ -1130,7 +1127,6 @@
             return stars;
         }
 
-        // Updated viewFullReview - shows all 5 ratings
         function viewFullReview(id) {
             const r = ratedRestaurants.find(x => x.id === id);
             if (!r) return;
