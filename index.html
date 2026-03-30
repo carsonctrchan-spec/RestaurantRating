@@ -732,15 +732,15 @@
                         </div>
                         <div class="form-group"><label>食物品質</label>
                             <div class="star-rating" data-rating="food">
-                
+                                <i class="far fa-star" data-value="0.5"></i>
                                 <i class="far fa-star" data-value="1"></i>
-                           
+                                <i class="far fa-star" data-value="1.5"></i>
                                 <i class="far fa-star" data-value="2"></i>
-                       
+                                <i class="far fa-star" data-value="2.5"></i>
                                 <i class="far fa-star" data-value="3"></i>
-
+                                <i class="far fa-star" data-value="3.5"></i>
                                 <i class="far fa-star" data-value="4"></i>
-
+                                <i class="far fa-star" data-value="4.5"></i>
                                 <i class="far fa-star" data-value="5"></i>
                             </div>
                             <input type="hidden" name="food-rating" value="0">
@@ -1111,29 +1111,27 @@
         }
 
         // 5 stars with half-star support
-        function generateStars(n) {
-            let stars = '';
+       function generateStars(n) {
+            let html = '';
             const full = Math.floor(n);
             const hasHalf = (n % 1) >= 0.5;
             for (let i = 1; i <= 5; i++) {
                 if (i <= full) {
-                    stars += '<i class="fas fa-star"></i>';
+                    html += '<i class="fas fa-star"></i>';
                 } else if (i === full + 1 && hasHalf) {
-                    stars += '<i class="fas fa-star-half-alt"></i>';
+                    html += '<i class="fas fa-star-half-alt"></i>';
                 } else {
-                    stars += '<i class="far fa-star"></i>';
+                    html += '<i class="far fa-star"></i>';
                 }
             }
-            return stars;
+            return html;
         }
 
         function viewFullReview(id) {
             const r = ratedRestaurants.find(x => x.id === id);
             if (!r) return;
-
             document.getElementById('modal-body').innerHTML = `
                 <h2 style="color:var(--coral);margin-bottom:25px;">${r.name}</h2>
-                
                 <div style="margin:20px 0; padding:20px; background:var(--cream); border-radius:12px;">
                     <div class="rating-item"><strong>整體評分</strong> <span class="rating-item-stars">${generateStars(r.overallRating)}</span></div>
                     <div class="rating-item"><strong>食物品質</strong> <span class="rating-item-stars">${generateStars(r.foodRating)}</span></div>
@@ -1141,7 +1139,6 @@
                     <div class="rating-item"><strong>環境氛圍</strong> <span class="rating-item-stars">${generateStars(r.ambianceRating)}</span></div>
                     <div class="rating-item"><strong>CP值</strong> <span class="rating-item-stars">${generateStars(r.valueRating)}</span></div>
                 </div>
-
                 <p><strong>地區：</strong>${r.region === 'Kowloon' ? '九龍' : r.region === 'New Territories' ? '新界' : '港島'}</p>
                 ${r.location ? `<p><strong>地址：</strong>${r.location}</p>` : ''}
                 <p><strong>實付：</strong>${r.pricePaid}</p>
