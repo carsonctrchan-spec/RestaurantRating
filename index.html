@@ -1308,17 +1308,43 @@ function updateStars(starsContainer, value) {
             }
 
            <div class="rating-display">
-                        <div class="rating-item">
-                            <span>整體評分</span>
-                            <span class="rating-stars">${generateStars(r.overallRating || 0)}</span>
-                            <span class="rating-value">${(r.overallRating || 0).toFixed(1)} / 5</span>
-                        </div>
-                        <div class="rating-item">
-                            <span>食物品質</span>
-                            <span class="rating-stars">${generateStars(r.foodRating || 0)}</span>
-                            <span class="rating-value">${(r.foodRating || 0).toFixed(1)} / 5</span>
-                        </div>
+container.innerHTML = list.map(r => `
+            <div class="restaurant-card" onclick="event.stopImmediatePropagation(); toggleComment('rating-${r.id}')">
+                <div class="card-header">
+                    <h3>${r.name}</h3>
+                </div>
+                
+                <div class="rating-display">
+                    <div class="rating-item">
+                        <span>整體評分</span>
+                        <span class="rating-stars">${generateStars(r.overallRating || 0)}</span>
+                        <span class="rating-value">${(r.overallRating || 0).toFixed(1)} / 5</span>
                     </div>
+                    <div class="rating-item">
+                        <span>食物品質</span>
+                        <span class="rating-stars">${generateStars(r.foodRating || 0)}</span>
+                        <span class="rating-value">${(r.foodRating || 0).toFixed(1)} / 5</span>
+                    </div>
+                </div>
+
+                <!-- Keep all your original card content here (cuisine, region, price, comment section, buttons, etc.) -->
+                <div class="card-info">
+                    <span class="cuisine">${r.cuisine || ''}</span>
+                    <span class="region">${r.region || ''}</span>
+                    <span class="price">HK$${r.price || ''}</span>
+                </div>
+                
+                <div class="comment-section" id="rating-${r.id}">
+                    <p>${r.comments || '無評論'}</p>
+                </div>
+
+                <div class="card-actions">
+                    <button onclick="event.stopPropagation(); viewFullReview('${r.id}')" class="btn btn-primary">完整評價</button>
+                    <button onclick="event.stopPropagation(); editRating('${r.id}')" class="btn btn-secondary">編輯</button>
+                    <button onclick="event.stopPropagation(); deleteRating('${r.id}')" class="btn btn-danger">刪除</button>
+                </div>
+            </div>
+        `).join('');
                     <div class="card-badges">
                         <span class="badge badge-cuisine"><i class="fas fa-utensils"></i> ${r.cuisine}</span>
                         <span class="badge badge-region"><i class="fas fa-map"></i> ${r.region === 'Kowloon' ? '九龍' : r.region === 'New Territories' ? '新界' : '港島'}</span>
