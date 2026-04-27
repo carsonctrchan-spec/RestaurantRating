@@ -882,10 +882,13 @@
             const r = ratedRestaurants.find(x => x.id === id);
             if (!r) return;
             document.getElementById('modal-body').innerHTML = `
-                <h2 style="color:var(--coral);margin-bottom:25px;">${r.name}</h2>
+                <h2 style="color:var(--coral); margin-bottom:25px;">${r.name}</h2>
                 <div class="rating-display">
                     <div class="rating-item"><span>整體評分</span><span class="rating-stars">${generateStars(r.overallRating || 0)}</span></div>
                     <div class="rating-item"><span>食物品質</span><span class="rating-stars">${generateStars(r.foodRating || 0)}</span></div>
+                    <div class="rating-item"><span>服務品質</span><span class="rating-stars">${generateStars(r.serviceRating || 0)}</span></div>
+                    <div class="rating-item"><span>環境氛圍</span><span class="rating-stars">${generateStars(r.ambianceRating || 0)}</span></div>
+                    <div class="rating-item"><span>CP值</span><span class="rating-stars">${generateStars(r.valueRating || 0)}</span></div>
                 </div>
                 ${r.location ? `<p><strong>地址：</strong>${r.location}</p>` : ''}
                 ${r.dishes ? `<p><strong>點餐內容：</strong><br>${r.dishes}</p>` : ''}
