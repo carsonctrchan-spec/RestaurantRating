@@ -1153,12 +1153,6 @@
             document.getElementById('stat-rated').textContent = ratedRestaurants.length;
         }
 
-        // Placeholder for renderToTryList (you can expand it later)
-        function renderToTryList() {
-            const container = document.getElementById('to-try-list');
-            container.innerHTML = `<div class="empty-state"><i class="fas fa-utensils"></i><h3>想嘗試的餐廳列表</h3><p>目前 ${toTryRestaurants.length} 筆</p></div>`;
-        }
-
         document.addEventListener('DOMContentLoaded', () => {
             // Password handling
             document.getElementById('password-form').addEventListener('submit', handlePasswordSubmit);
