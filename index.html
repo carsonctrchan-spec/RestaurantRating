@@ -828,7 +828,43 @@
             });
         }
 
-        // ==================== 修復後的 renderRatingList ====================
+      // 想嘗試的餐廳列表 (已完整修復)
+        function renderToTryList() {
+            const container = document.getElementById('to-try-list');
+            if (toTryRestaurants.length === 0) {
+                container.innerHTML = `<div style="text-align:center; padding:60px 20px; color:var(--gray);">
+                    <i class="fas fa-utensils" style="font-size:4rem; opacity:0.3;"></i>
+                    <h3>還沒有想嘗試的餐廳</h3>
+                    <p>開始新增吧！</p>
+                </div>`;
+                return;
+            }
+
+            container.innerHTML = toTryRestaurants.map(r => `
+                <div class="restaurant-card" onclick="event.stopImmediatePropagation(); toggleComment('to-try-${r.id}')">
+                    <div class="card-header"><h3>${r.name}</h3></div>
+                    <div class="card-badges">
+                        <span class="badge badge-cuisine"><i class="fas fa-utensils"></i> ${r.cuisine || ''}</span>
+                        <span class="badge badge-region"><i class="fas fa-map"></i> ${r.region || ''}</span>
+                    </div>
+                    <div class="card-info">
+                        ${r.location ? `<p><i class="fas fa-map-marker-alt"></i> ${r.location}</p>` : ''}
+                        <p><i class="fas fa-comment"></i> ${r.reason ? r.reason.substring(0, 80) + '...' : '無原因說明'}</p>
+                    </div>
+                    <div class="comment-section" id="to-try-${r.id}">
+                        ${r.reason ? `<p><strong>想嘗試的原因：</strong><br>${r.reason}</p>` : ''}
+                        ${r.notes ? `<p><strong>備註：</strong><br>${r.notes}</p>` : ''}
+                        ${r.moreInfo ? `<p><strong>連結：</strong><a href="${r.moreInfo}" target="_blank">${r.moreInfo}</a></p>` : ''}
+                    </div>
+                    <div class="card-actions">
+                        <button onclick="event.stopPropagation(); markAsVisited('${r.id}')" class="btn btn-primary">標記已造訪</button>
+                        <button onclick="event.stopPropagation(); editToTry('${r.id}')" class="btn btn-secondary">編輯</button>
+                        <button onclick="event.stopPropagation(); deleteToTry('${r.id}')" class="btn btn-danger">刪除</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
         function renderRatingList() {
             const container = document.getElementById('rating-list');
             let list = ratedRestaurants;
