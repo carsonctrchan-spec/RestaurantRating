@@ -519,22 +519,7 @@
         @media (max-width: 480px) {
             #editor-box { padding: 24px 18px; width: 94%; }
         }
-        .restaurant-card {
-    cursor: pointer;
-    user-select: none;
-}
-
-.rating-display, .rating-item {
-    pointer-events: none;           /* This is the key fix */
-}
-
-.card-actions button {
-    pointer-events: auto;
-}
-
-.comment-section {
-    pointer-events: none;
-}
+       
     </style>
 </head>
 <body>
@@ -1264,31 +1249,10 @@ function updateStars(starsContainer, value) {
                 return;
             }
 
-            container.innerHTML = list.map(r => `
-                <div class="restaurant-card" onclick="toggleComment('to-try-${r.id}')">
-                    <div class="card-header"><h3>${r.name}</h3></div>
-                    <div class="card-badges">
-                        <span class="badge badge-cuisine"><i class="fas fa-utensils"></i> ${r.cuisine}</span>
-                        <span class="badge badge-price"><i class="fas fa-dollar-sign"></i> ${r.price}</span>
-                        <span class="badge badge-region"><i class="fas fa-map"></i> ${r.region === 'Kowloon' ? '九龍' : r.region === 'New Territories' ? '新界' : '港島'}</span>
-                        <span class="badge-priority ${r.priority}"><i class="fas fa-flag"></i> ${r.priority==='high'?'高':r.priority==='medium'?'中':'低'}優先</span>
+                              <div class="rating-display">
+                        <div class="rating-stars">${generateStars(r.overallRating)}</div>
+                        <span class="rating-value">${r.overallRating}.0 / 5.0</span>
                     </div>
-                    <div class="card-info">
-                        ${r.location ? `<p><i class="fas fa-map-marker-alt"></i> ${r.location}</p>` : ''}
-                        ${r.recommendedBy ? `<p><i class="fas fa-user"></i> 推薦人：${r.recommendedBy}</p>` : ''}
-                        ${r.moreInfo ? `<p><i class="fas fa-link"></i> <a href="${r.moreInfo}" target="_blank" rel="noopener">連結</a></p>` : ''}
-                    </div>
-                    <div id="to-try-${r.id}" class="comment-section">
-                        ${r.reason ? `<p><strong>想嘗試的原因：</strong><br>${r.reason}</p>` : ''}
-                        ${r.notes ? `<p><strong>備註：</strong><br>${r.notes}</p>` : ''}
-                    </div>
-                    <div class="card-actions">
-                        <button class="btn btn-primary" onclick="event.stopPropagation(); markAsVisited('${r.id}')"><i class="fas fa-check"></i> 標記已造訪</button>
-                        <button class="btn btn-secondary" onclick="event.stopPropagation(); editToTry('${r.id}')"><i class="fas fa-edit"></i> 編輯</button>
-                        <button class="btn btn-danger" onclick="event.stopPropagation(); deleteToTry('${r.id}')"><i class="fas fa-trash"></i> 刪除</button>
-                    </div>
-                </div>
-            `).join('');
 
             container.querySelectorAll('.comment-section').forEach(el => el.classList.remove('active'));
         }
