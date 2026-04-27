@@ -1287,12 +1287,13 @@ function updateStars(starsContainer, value) {
                 return;
             }
 
-           <div class="rating-display">
 container.innerHTML = list.map(r => `
-            <div class="restaurant-card" onclick="event.stopImmediatePropagation(); toggleComment('rating-${r.id}')">
-                <div class="card-header">
-                    <h3>${r.name}</h3>
-                </div>
+                <div class="restaurant-card" onclick="toggleComment('rating-${r.id}')">
+                    <div class="card-header"><h3>${r.name}</h3></div>
+                    <div class="rating-display">
+                        <div class="rating-stars">${generateStars(r.overallRating)}</div>
+                        <span class="rating-value">${r.overallRating}.0 / 5.0</span>
+                    </div>
                 
                 <div class="rating-display">
                     <div class="rating-item">
