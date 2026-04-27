@@ -872,16 +872,16 @@
             
             <!-- Link shown at the top -->
             ${r.moreInfo ? `
+                        <div class="card-info">
+                ${r.location ? `<p><i class="fas fa-map-marker-alt"></i> ${r.location}</p>` : ''}
+            </div>
             <p style="margin:10px 0;">
                 <a href="${r.moreInfo}" target="_blank" style="color:var(--coral); text-decoration:underline;">
                     🔗 Openrice
                 </a>
             </p>` : ''}
             
-            <div class="card-info">
-                ${r.location ? `<p><i class="fas fa-map-marker-alt"></i> ${r.location}</p>` : ''}
-            </div>
-            
+
             <!-- Hidden until click: 想嘗試的原因 + 備註 -->
             <div class="comment-section" id="to-try-${r.id}">
                 ${r.reason ? `<p><strong>想嘗試的原因：</strong><br>${r.reason}</p>` : ''}
