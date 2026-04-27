@@ -519,6 +519,22 @@
         @media (max-width: 480px) {
             #editor-box { padding: 24px 18px; width: 94%; }
         }
+        .restaurant-card {
+    cursor: pointer;
+    user-select: none;
+}
+
+.rating-display, .rating-item {
+    pointer-events: none;           /* This is the key fix */
+}
+
+.card-actions button {
+    pointer-events: auto;
+}
+
+.comment-section {
+    pointer-events: none;
+}
     </style>
 </head>
 <body>
