@@ -183,12 +183,10 @@
             box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.1);
         }
         .form-group textarea { resize: vertical; min-height: 100px; }
-
-        /* 5 stars only with half-star support */
-       .star-rating {
+        .star-rating {
             display: flex;
-            gap: 8px;
-            font-size: 2rem;
+            gap: 5px;
+            font-size: 1.8rem;
         }
         .star-rating i {
             cursor: pointer;
@@ -197,7 +195,6 @@
         }
         .star-rating i.active,
         .star-rating i:hover { color: var(--gold); }
-
         .submit-btn {
             background: linear-gradient(135deg, var(--coral), var(--orange));
             color: white;
@@ -461,7 +458,7 @@
             color: var(--gray);
         }
 
-        /* Mobile fixes */
+        /* Mobile fixes - prevent side overflow */
         @media (max-width: 768px) {
             .container { padding: 16px; }
             header { padding: 24px 16px; border-radius: 0 0 16px 16px; }
@@ -473,18 +470,23 @@
             .controls-bar { flex-direction: column; gap: 12px; }
             .filter-select { width: 100%; }
             .cards-grid { grid-template-columns: 1fr; }
-            .restaurant-card { padding: 20px; overflow: hidden; }
+            .restaurant-card {
+                padding: 20px;
+                overflow: hidden;
+            }
             .card-badges { flex-wrap: wrap; max-width: 100%; }
             .badge { flex-shrink: 1; white-space: normal; word-break: break-word; }
             .card-info p { word-break: break-all; overflow-wrap: break-word; hyphens: auto; }
             .card-actions { justify-content: center; flex-wrap: wrap; }
             .btn { min-width: 110px; justify-content: center; }
         }
+
         @media (max-width: 480px) {
             .restaurant-card { padding: 18px; }
             .badge { font-size: 0.75rem; padding: 3px 8px; }
             .btn { min-width: 100px; }
         }
+
         /* Password prompt */
         #editor-prompt {
             position: fixed;
@@ -516,6 +518,7 @@
         #confirm-btn:hover { background: #e55a5a; }
         #skip-link { color: var(--gray); cursor: pointer; text-decoration: underline; font-size: 0.95rem; margin-top: 20px; }
         #skip-link:hover { color: var(--text); }
+
         @media (max-width: 480px) {
             #editor-box { padding: 24px 18px; width: 94%; }
         }
@@ -528,12 +531,12 @@
         <div id="editor-box">
             <h2>編輯權限驗證</h2>
             <p>輸入密碼才能新增、編輯、刪除或標記已造訪</p>
-           
+            
             <form id="password-form">
                 <input type="password" id="editor-password" placeholder="輸入密碼" autocomplete="off">
                 <button type="submit" id="confirm-btn">確認</button>
             </form>
-           
+            
             <div id="skip-link">我只想觀看 →</div>
         </div>
     </div>
@@ -576,7 +579,6 @@
         </div>
 
         <div id="to-try-tab" class="tab-content active">
-            <!-- Your original to-try form and list (unchanged) -->
             <div class="form-section">
                 <h2><i class="fas fa-plus-circle"></i> 新增想嘗試的餐廳</h2>
                 <form id="to-try-form" onsubmit="addToTryRestaurant(event)">
@@ -712,62 +714,13 @@
                             <option value="never">絕不會 (Never)</option>
                         </select></div>
                     </div>
-
-                   <!-- 5 visible stars + half-star support (10 icons internally) -->
                     <div class="form-grid">
-                        <div class="form-group"><label>整體評分</label>
-                            <div class="star-rating" data-rating="overall">
-                              
-                                <i class="far fa-star" data-value="1"></i>
-                                <i class="far fa-star" data-value="2"></i>
-                                <i class="far fa-star" data-value="3"></i>
-                                <i class="far fa-star" data-value="4"></i>
-                                <i class="far fa-star" data-value="5"></i>
-                            </div>
-                            <input type="hidden" name="overall-rating" value="0">
-                        </div>
-                        <div class="form-group"><label>食物品質</label>
-                            <div class="star-rating" data-rating="food">
-                                <i class="far fa-star" data-value="1"></i>
-                                <i class="far fa-star" data-value="2"></i>
-                                <i class="far fa-star" data-value="3"></i>
-                                <i class="far fa-star" data-value="4"></i>
-                                <i class="far fa-star" data-value="5"></i>
-                            </div>
-                            <input type="hidden" name="food-rating" value="0">
-                        </div>
-                        <div class="form-group"><label>服務品質</label>
-                            <div class="star-rating" data-rating="service">
-                                <i class="far fa-star" data-value="1"></i>
-                                <i class="far fa-star" data-value="2"></i>
-                                <i class="far fa-star" data-value="3"></i>
-                                <i class="far fa-star" data-value="4"></i>
-                                <i class="far fa-star" data-value="5"></i>
-                            </div>
-                            <input type="hidden" name="service-rating" value="0">
-                        </div>
-                        <div class="form-group"><label>環境氛圍</label>
-                            <div class="star-rating" data-rating="ambiance">
-                                <i class="far fa-star" data-value="1"></i>
-                                <i class="far fa-star" data-value="2"></i>
-                                <i class="far fa-star" data-value="3"></i>
-                                <i class="far fa-star" data-value="4"></i>
-                                <i class="far fa-star" data-value="5"></i>
-                            </div>
-                            <input type="hidden" name="ambiance-rating" value="0">
-                        </div>
-                        <div class="form-group"><label>CP值</label>
-                            <div class="star-rating" data-rating="value">
-                                <i class="far fa-star" data-value="1"></i>
-                                <i class="far fa-star" data-value="2"></i>
-                                <i class="far fa-star" data-value="3"></i>
-                                <i class="far fa-star" data-value="4"></i>
-                                <i class="far fa-star" data-value="5"></i>
-                            </div>
-                            <input type="hidden" name="value-rating" value="0">
-                        </div>
+                        <div class="form-group"><label>整體評分</label><div class="star-rating" data-rating="overall"><i class="far fa-star" data-value="1"></i><i class="far fa-star" data-value="2"></i><i class="far fa-star" data-value="3"></i><i class="far fa-star" data-value="4"></i><i class="far fa-star" data-value="5"></i></div><input type="hidden" name="overall-rating" value="0"></div>
+                        <div class="form-group"><label>食物品質</label><div class="star-rating" data-rating="food"><i class="far fa-star" data-value="1"></i><i class="far fa-star" data-value="2"></i><i class="far fa-star" data-value="3"></i><i class="far fa-star" data-value="4"></i><i class="far fa-star" data-value="5"></i></div><input type="hidden" name="food-rating" value="0"></div>
+                        <div class="form-group"><label>服務品質</label><div class="star-rating" data-rating="service"><i class="far fa-star" data-value="1"></i><i class="far fa-star" data-value="2"></i><i class="far fa-star" data-value="3"></i><i class="far fa-star" data-value="4"></i><i class="far fa-star" data-value="5"></i></div><input type="hidden" name="service-rating" value="0"></div>
+                        <div class="form-group"><label>環境氛圍</label><div class="star-rating" data-rating="ambiance"><i class="far fa-star" data-value="1"></i><i class="far fa-star" data-value="2"></i><i class="far fa-star" data-value="3"></i><i class="far fa-star" data-value="4"></i><i class="far fa-star" data-value="5"></i></div><input type="hidden" name="ambiance-rating" value="0"></div>
+                        <div class="form-group"><label>CP值</label><div class="star-rating" data-rating="value"><i class="far fa-star" data-value="1"></i><i class="far fa-star" data-value="2"></i><i class="far fa-star" data-value="3"></i><i class="far fa-star" data-value="4"></i><i class="far fa-star" data-value="5"></i></div><input type="hidden" name="value-rating" value="0"></div>
                     </div>
-
                     <div class="form-group"><label>點餐內容</label><textarea name="dishes" placeholder="列出您點的餐點"></textarea></div>
                     <div class="form-group"><label>整體評價</label><textarea name="review" placeholder="詳細的用餐體驗評價"></textarea></div>
                     <button type="submit" class="submit-btn"><i class="fas fa-star"></i><span>新增評分</span></button>
@@ -863,7 +816,7 @@
         let editingRatingId = null;
 
         let isEditor = false;
-        const EDITOR_PASSWORD = "ilymy";
+        const EDITOR_PASSWORD = "friends2026";
 
         function hidePrompt() {
             const prompt = document.getElementById('editor-prompt');
@@ -877,6 +830,7 @@
             const input = document.getElementById('editor-password');
             if (!input) return;
             const value = input.value.trim();
+
             if (value === EDITOR_PASSWORD) {
                 isEditor = true;
                 hidePrompt();
@@ -895,9 +849,12 @@
             showSuccess('以觀看模式進入');
         }
 
+        // Attach events
         document.addEventListener('DOMContentLoaded', () => {
             const passwordForm = document.getElementById('password-form');
-            if (passwordForm) passwordForm.addEventListener('submit', handlePasswordSubmit);
+            if (passwordForm) {
+                passwordForm.addEventListener('submit', handlePasswordSubmit);
+            }
 
             const skipLink = document.getElementById('skip-link');
             if (skipLink) {
@@ -907,6 +864,7 @@
                     skipEditor();
                 });
             }
+
             const passwordInput = document.getElementById('editor-password');
             if (passwordInput) {
                 passwordInput.addEventListener('keydown', (e) => {
@@ -917,6 +875,8 @@
                 });
                 passwordInput.focus();
             }
+
+            // Lock scroll and touch while prompt is visible
             document.body.style.overflow = 'hidden';
             document.body.style.touchAction = 'none';
         });
@@ -971,11 +931,11 @@
                 wouldReturn: f['would-return'].value,
                 dishes: f.dishes.value.trim(),
                 review: f.review.value.trim(),
-                overallRating: parseFloat(f['overall-rating'].value) || 0,
-                foodRating: parseFloat(f['food-rating'].value) || 0,
-                serviceRating: parseFloat(f['service-rating'].value) || 0,
-                ambianceRating: parseFloat(f['ambiance-rating'].value) || 0,
-                valueRating: parseFloat(f['value-rating'].value) || 0,
+                overallRating: parseInt(f['overall-rating'].value) || 0,
+                foodRating: parseInt(f['food-rating'].value) || 0,
+                serviceRating: parseInt(f['service-rating'].value) || 0,
+                ambianceRating: parseInt(f['ambiance-rating'].value) || 0,
+                valueRating: parseInt(f['value-rating'].value) || 0,
                 dateAdded: editingRatingId ? ratedRestaurants.find(r => r.id === editingRatingId)?.dateAdded || firebase.firestore.FieldValue.serverTimestamp() : firebase.firestore.FieldValue.serverTimestamp()
             };
             try {
@@ -1086,43 +1046,29 @@
             if (el) el.classList.toggle('active');
         }
 
-        // 5 stars with half-star support
-   function generateStars(n) {
-            let html = '';
-            const full = Math.floor(n);
-            const hasHalf = (n % 1) >= 0.5;
-            for (let i = 1; i <= 5; i++) {
-                if (i <= full) html += '<i class="fas fa-star"></i>';
-                else if (i === full + 1 && hasHalf) html += '<i class="fas fa-star-half-alt"></i>';
-                else html += '<i class="far fa-star"></i>';
-            }
-            return html;
+        function generateStars(n) {
+            return Array(5).fill().map((_,i) => i < n ? '<i class="fas fa-star"></i>' : '<i class="far fa-star"></i>').join('');
         }
 
         function viewFullReview(id) {
             const r = ratedRestaurants.find(x => x.id === id);
             if (!r) return;
             document.getElementById('modal-body').innerHTML = `
-                <h2 style="color:var(--coral);margin-bottom:25px;">${r.name}</h2>
-                <div style="margin:20px 0; padding:20px; background:var(--cream); border-radius:12px;">
-                    <div class="rating-item"><strong>整體評分</strong> <span class="rating-item-stars">${generateStars(r.overallRating)}</span></div>
-                    <div class="rating-item"><strong>食物品質</strong> <span class="rating-item-stars">${generateStars(r.foodRating)}</span></div>
-                    <div class="rating-item"><strong>服務品質</strong> <span class="rating-item-stars">${generateStars(r.serviceRating)}</span></div>
-                    <div class="rating-item"><strong>環境氛圍</strong> <span class="rating-item-stars">${generateStars(r.ambianceRating)}</span></div>
-                    <div class="rating-item"><strong>CP值</strong> <span class="rating-item-stars">${generateStars(r.valueRating)}</span></div>
+                <h2 style="color:var(--coral);margin-bottom:20px;">${r.name}</h2>
+                <div class="rating-display" style="margin-bottom:20px;">
+                    <div class="rating-stars">${generateStars(r.overallRating)}</div>
+                    <span class="rating-value">${r.overallRating}.0 / 5.0</span>
                 </div>
                 <p><strong>地區：</strong>${r.region === 'Kowloon' ? '九龍' : r.region === 'New Territories' ? '新界' : '港島'}</p>
                 ${r.location ? `<p><strong>地址：</strong>${r.location}</p>` : ''}
                 <p><strong>實付：</strong>${r.pricePaid}</p>
-                ${r.dishes ? `<p style="margin-top:25px;"><strong>點餐內容：</strong><br>${r.dishes}</p>` : ''}
                 ${r.review ? `<p style="white-space:pre-wrap;margin-top:20px;"><strong>整體評價：</strong><br>${r.review}</p>` : ''}
+                ${r.dishes ? `<p style="margin-top:20px;"><strong>點餐內容：</strong><br>${r.dishes}</p>` : ''}
             `;
             document.getElementById('review-modal').classList.add('active');
         }
 
-        function closeModal() { 
-            document.getElementById('review-modal').classList.remove('active'); 
-        }
+        function closeModal() { document.getElementById('review-modal').classList.remove('active'); }
 
         function filterToTry() { renderToTryList(); }
         function filterRatings() { renderRatingList(); }
@@ -1193,30 +1139,28 @@
             });
         }
 
- function initializeStarRatings() {
+        function initializeStarRatings() {
             document.querySelectorAll('.star-rating').forEach(container => {
                 const stars = container.querySelectorAll('i');
+                const input = container.parentElement.querySelector('input[type="hidden"]');
                 stars.forEach(star => {
                     star.addEventListener('click', () => {
-                        const value = parseFloat(star.getAttribute('data-value'));
-                        const hiddenInput = container.parentElement.querySelector('input[type="hidden"]');
-                        if (hiddenInput) hiddenInput.value = value;
-                        updateStars(container, value);
+                        const value = parseInt(star.dataset.value);
+                        input.value = value;
+                        updateStars(stars, value);
                     });
+                    star.addEventListener('mouseenter', () => updateStars(stars, parseInt(star.dataset.value)));
                 });
+                container.addEventListener('mouseleave', () => updateStars(stars, parseInt(input.value) || 0));
             });
         }
 
-function updateStars(starsContainer, value) {
-            const stars = starsContainer.querySelectorAll('i');
-            stars.forEach(star => {
-                const starValue = parseFloat(star.getAttribute('data-value'));
-                if (starValue <= value) {
-                    star.classList.remove('far');
-                    star.classList.add('fas', 'active');
+        function updateStars(stars, value) {
+            stars.forEach((star, i) => {
+                if (i < value) {
+                    star.classList.remove('far'); star.classList.add('fas', 'active');
                 } else {
-                    star.classList.remove('fas', 'active');
-                    star.classList.add('far');
+                    star.classList.remove('fas', 'active'); star.classList.add('far');
                 }
             });
         }
@@ -1274,6 +1218,7 @@ function updateStars(starsContainer, value) {
                 </div>
             `).join('');
 
+            // Ensure new cards are collapsed
             container.querySelectorAll('.comment-section').forEach(el => el.classList.remove('active'));
         }
 
@@ -1335,6 +1280,7 @@ function updateStars(starsContainer, value) {
                 </div>
             `).join('');
 
+            // Ensure new cards are collapsed
             container.querySelectorAll('.comment-section').forEach(el => el.classList.remove('active'));
         }
 
