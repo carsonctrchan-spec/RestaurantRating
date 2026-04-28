@@ -627,6 +627,38 @@
             </form>
         </div>
     </div>
+                        <!-- Search and Filter Controls for 想嘗試的餐廳 -->
+            <div class="controls-bar">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="search-to-try" placeholder="搜尋餐廳名稱或地址..." oninput="filterToTry()">
+                </div>
+                <select class="filter-select" id="filter-cuisine-to-try" onchange="filterToTry()">
+                    <option value="">所有料理類型</option>
+                    <option value="Italian">義式料理</option>
+                    <option value="Japanese">日式料理</option>
+                    <option value="Chinese">中式料理</option>
+                    <option value="French">法式料理</option>
+                    <option value="Thai">泰式料理</option>
+                    <option value="Korean">韓式料理</option>
+                    <option value="American">美式料理</option>
+                    <option value="Mexican">墨西哥料理</option>
+                    <option value="Indian">印度料理</option>
+                    <option value="Fusion">Fusion</option>
+                    <option value="Western">Western</option>
+                    <option value="Drinks">Drinks</option>
+                    <option value="Cafe">咖啡廳</option>
+                    <option value="Dessert">甜品</option>
+                    <option value="SmallBites">小食</option>
+                    <option value="Other">其他</option>
+                </select>
+                <select class="filter-select" id="filter-region-to-try" onchange="filterToTry()">
+                    <option value="">所有地區</option>
+                    <option value="Kowloon">九龍</option>
+                    <option value="New Territories">新界</option>
+                    <option value="Hong Kong Island">港島</option>
+                </select>
+            </div>
     <div id="to-try-list" class="cards-grid"></div>
 </div>
 
@@ -741,6 +773,44 @@
             </form>
         </div>
     </div>
+                        <!-- Search and Filter Controls for 餐廳評分 -->
+            <div class="controls-bar">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="search-rating" placeholder="搜尋餐廳名稱或地址..." oninput="filterRatings()">
+                </div>
+                <select class="filter-select" id="filter-cuisine-rating" onchange="filterRatings()">
+                    <option value="">所有料理類型</option>
+                    <option value="Italian">義式料理</option>
+                    <option value="Japanese">日式料理</option>
+                    <option value="Chinese">中式料理</option>
+                    <option value="French">法式料理</option>
+                    <option value="Thai">泰式料理</option>
+                    <option value="Korean">韓式料理</option>
+                    <option value="American">美式料理</option>
+                    <option value="Mexican">墨西哥料理</option>
+                    <option value="Indian">印度料理</option>
+                    <option value="Fusion">Fusion</option>
+                    <option value="Western">Western</option>
+                    <option value="Drinks">Drinks</option>
+                    <option value="Cafe">咖啡廳</option>
+                    <option value="Dessert">甜品</option>
+                    <option value="SmallBites">小食</option>
+                    <option value="Other">其他</option>
+                </select>
+                <select class="filter-select" id="filter-region-rating" onchange="filterRatings()">
+                    <option value="">所有地區</option>
+                    <option value="Kowloon">九龍</option>
+                    <option value="New Territories">新界</option>
+                    <option value="Hong Kong Island">港島</option>
+                </select>
+                <select class="filter-select" id="filter-food-rating" onchange="filterRatings()">
+                    <option value="">食物品質 (全部)</option>
+                    <option value="4">4.0 ★ 以上</option>
+                    <option value="3.5">3.5 ★ 以上</option>
+                    <option value="3">3.0 ★ 以上</option>
+                </select>
+            </div>
     <div id="rating-list" class="cards-grid"></div>
 </div>
 
@@ -849,10 +919,11 @@
         }
 
       // 想嘗試的餐廳列表 (已完整修復)
-        function renderToTryList() {
+        function renderToTryList(filteredList = null) {
     const container = document.getElementById('to-try-list');
-    
-    if (toTryRestaurants.length === 0) {
+    const list = filteredList || toTryRestaurants;
+
+    if (list.length === 0) {
         container.innerHTML = `<div style="text-align:center; padding:60px 20px; color:var(--gray);">
             <i class="fas fa-utensils" style="font-size:4rem; opacity:0.3; margin-bottom:20px;"></i>
             <h3>還沒有想嘗試的餐廳</h3>
@@ -861,7 +932,7 @@
         return;
     }
 
-    container.innerHTML = toTryRestaurants.map(r => `
+    container.innerHTML = list.map(r => `
         <div class="restaurant-card" onclick="event.stopImmediatePropagation(); toggleComment('to-try-${r.id}')">
             <div class="card-header"><h3>${r.name}</h3></div>
             
@@ -870,19 +941,17 @@
                 <span class="badge badge-region"><i class="fas fa-map"></i> ${r.region || ''}</span>
             </div>
             
-            <!-- Link shown at the top -->
             ${r.moreInfo ? `
-                        <div class="card-info">
-                ${r.location ? `<p><i class="fas fa-map-marker-alt"></i> ${r.location}</p>` : ''}
-            </div>
-            <p style="margin:10px 0;">
+            <p style="margin:10px 0 8px 0;">
                 <a href="${r.moreInfo}" target="_blank" style="color:var(--coral); text-decoration:underline;">
                     🔗 Openrice
                 </a>
             </p>` : ''}
             
-
-            <!-- Hidden until click: 想嘗試的原因 + 備註 -->
+            <div class="card-info">
+                ${r.location ? `<p><i class="fas fa-map-marker-alt"></i> ${r.location}</p>` : ''}
+            </div>
+            
             <div class="comment-section" id="to-try-${r.id}">
                 ${r.reason ? `<p><strong>想嘗試的原因：</strong><br>${r.reason}</p>` : ''}
                 ${r.notes ? `<p><strong>備註：</strong><br>${r.notes}</p>` : ''}
@@ -897,49 +966,61 @@
     `).join('');
 }
 
-        function renderRatingList() {
-            const container = document.getElementById('rating-list');
-            let list = ratedRestaurants;
+      function renderRatingList(filteredList = null) {
+    const container = document.getElementById('rating-list');
+    const list = filteredList || ratedRestaurants;
 
-            container.innerHTML = list.map(r => `
-                <div class="restaurant-card" onclick="event.stopImmediatePropagation(); toggleComment('rating-${r.id}')">
-                    <div class="card-header"><h3>${r.name}</h3></div>
-                    
-                    <div class="rating-display">
-                        <div class="rating-item">
-                            <span>整體評分</span>
-                            <span class="rating-stars">${generateStars(r.overallRating || 0)}</span>
-                            <span class="rating-value">${(r.overallRating || 0).toFixed(1)} / 5</span>
-                        </div>
-                        <div class="rating-item">
-                            <span>食物品質</span>
-                            <span class="rating-stars">${generateStars(r.foodRating || 0)}</span>
-                            <span class="rating-value">${(r.foodRating || 0).toFixed(1)} / 5</span>
-                        </div>
-                    </div>
+    if (list.length === 0) {
+        container.innerHTML = `<div style="text-align:center; padding:60px 20px; color:var(--gray);">
+            <i class="fas fa-star" style="font-size:4rem; opacity:0.3; margin-bottom:20px;"></i>
+            <h3>還沒有評分記錄</h3>
+            <p>開始記錄用餐體驗吧！</p>
+        </div>`;
+        return;
+    }
 
-                    <div class="card-badges">
-                        <span class="badge badge-cuisine"><i class="fas fa-utensils"></i> ${r.cuisine || ''}</span>
-                        <span class="badge badge-region"><i class="fas fa-map"></i> ${r.region || ''}</span>
-                    </div>
-                    <div class="card-info">
-                        ${r.location ? `<p><i class="fas fa-map-marker-alt"></i> ${r.location}</p>` : ''}
-                        <p><i class="fas fa-dollar-sign"></i> 實付：${r.pricePaid || ''}</p>
-                    </div>
-                    <div class="comment-section" id="rating-${r.id}">
-                        ${r.dishes ? `<p><strong>點餐內容：</strong><br>${r.dishes}</p>` : ''}
-                        ${r.review ? `<p><strong>整體評價：</strong><br>${r.review}</p>` : ''}
-                    </div>
-                    <div class="card-actions">
-                        <button onclick="event.stopPropagation(); viewFullReview('${r.id}')" class="btn btn-primary">完整評價</button>
-                        <button onclick="event.stopPropagation(); editRating('${r.id}')" class="btn btn-secondary">編輯</button>
-                        <button onclick="event.stopPropagation(); deleteRating('${r.id}')" class="btn btn-danger">刪除</button>
-                    </div>
+    container.innerHTML = list.map(r => `
+        <div class="restaurant-card" onclick="event.stopImmediatePropagation(); toggleComment('rating-${r.id}')">
+            <div class="card-header"><h3>${r.name}</h3></div>
+            
+            <div class="rating-display">
+                <div class="rating-item">
+                    <span>整體評分</span>
+                    <span class="rating-stars">${generateStars(r.overallRating || 0)}</span>
+                    <span class="rating-value">${(r.overallRating || 0).toFixed(1)} / 5</span>
                 </div>
-            `).join('');
+                <div class="rating-item">
+                    <span>食物品質</span>
+                    <span class="rating-stars">${generateStars(r.foodRating || 0)}</span>
+                    <span class="rating-value">${(r.foodRating || 0).toFixed(1)} / 5</span>
+                </div>
+            </div>
 
-            container.querySelectorAll('.comment-section').forEach(el => el.classList.remove('active'));
-        }
+            <div class="card-badges">
+                <span class="badge badge-cuisine"><i class="fas fa-utensils"></i> ${r.cuisine || ''}</span>
+                <span class="badge badge-region"><i class="fas fa-map"></i> ${r.region || ''}</span>
+            </div>
+            
+            <div class="card-info">
+                ${r.location ? `<p><i class="fas fa-map-marker-alt"></i> ${r.location}</p>` : ''}
+                <p><i class="fas fa-dollar-sign"></i> 實付：${r.pricePaid || ''}</p>
+            </div>
+            
+            <div class="comment-section" id="rating-${r.id}">
+                ${r.dishes ? `<p><strong>點餐內容：</strong><br>${r.dishes}</p>` : ''}
+                ${r.review ? `<p><strong>整體評價：</strong><br>${r.review}</p>` : ''}
+            </div>
+            
+            <div class="card-actions">
+                <button onclick="event.stopPropagation(); viewFullReview('${r.id}')" class="btn btn-primary">完整評價</button>
+                <button onclick="event.stopPropagation(); editRating('${r.id}')" class="btn btn-secondary">編輯</button>
+                <button onclick="event.stopPropagation(); deleteRating('${r.id}')" class="btn btn-danger">刪除</button>
+            </div>
+        </div>
+    `).join('');
+
+    container.querySelectorAll('.comment-section').forEach(el => el.classList.remove('active'));
+}
 
         function toggleComment(id) {
             const el = document.getElementById(id);
@@ -1208,6 +1289,39 @@
         content.style.display = 'none';
         arrow.textContent = '▼';
     }
+}
+        function filterToTry() {
+    const search = document.getElementById('search-to-try').value.toLowerCase().trim();
+    const cuisine = document.getElementById('filter-cuisine-to-try').value;
+    const region = document.getElementById('filter-region-to-try').value;
+
+    let list = toTryRestaurants.filter(r => {
+        const nameMatch = (r.name || '').toLowerCase().includes(search);
+        const locationMatch = (r.location || '').toLowerCase().includes(search);
+        const cuisineMatch = !cuisine || r.cuisine === cuisine;
+        const regionMatch = !region || r.region === region;
+        return (nameMatch || locationMatch) && cuisineMatch && regionMatch;
+    });
+
+    renderToTryList(list);
+}
+
+function filterRatings() {
+    const search = document.getElementById('search-rating').value.toLowerCase().trim();
+    const cuisine = document.getElementById('filter-cuisine-rating').value;
+    const region = document.getElementById('filter-region-rating').value;
+    const minFood = parseFloat(document.getElementById('filter-food-rating').value) || 0;
+
+    let list = ratedRestaurants.filter(r => {
+        const nameMatch = (r.name || '').toLowerCase().includes(search);
+        const locationMatch = (r.location || '').toLowerCase().includes(search);
+        const cuisineMatch = !cuisine || r.cuisine === cuisine;
+        const regionMatch = !region || r.region === region;
+        const foodMatch = (r.foodRating || 0) >= minFood;
+        return (nameMatch || locationMatch) && cuisineMatch && regionMatch && foodMatch;
+    });
+
+    renderRatingList(list);
 }
     </script>
 </body>
