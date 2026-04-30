@@ -621,16 +621,8 @@
                         </select></div>
                     </div>
                     <div class="form-group"><label>想嘗試的原因</label><textarea name="reason" placeholder="為什麼想嘗試這家餐廳？"></textarea></div>
-                    <div class="form-group"><label>More Information</label><input type="text" name="more-info" placeholder="Link"></div>
-                <div class="form-group">
-    <label>More Information (OpenRice Link)</label>
-    <div style="display:flex; gap:8px;">
-        <input type="text" name="more-info" id="more-info-input" placeholder="https://www.openrice.com/..." style="flex:1;">
-        <button type="button" onclick="autoFillFromOpenRice()" style="padding:0 16px; background:var(--coral); color:white; border:none; border-radius:8px; cursor:pointer;">
-            自動填入
-        </button>
-    </div>
-</div>    
+                    <div class="form-group"><label>Open Rice Link</label><input type="text" name="more-info" placeholder="Link"></div>
+               
                 <div class="form-group"><label>備註</label><textarea name="notes" placeholder="其他備註資訊"></textarea></div>
                     <button type="submit" class="submit-btn"><i class="fas fa-plus"></i> 新增餐廳</button>
             </form>
@@ -1332,63 +1324,7 @@ function filterRatings() {
 
     renderRatingList(list);
 }
-async function autoFillFromOpenRice() {
-    let url = document.getElementById('more-info-input').value.trim();
 
-    if (!url) {
-        alert('請先輸入 OpenRice 連結');
-        return;
-    }
-    if (!url.startsWith('http')) url = 'https://' + url;
-
-    const form = document.getElementById('to-try-form');
-
-    try {
-        showSuccess('正在抓取 OpenRice 資料，請稍候...');
-
-        // Try a different, more reliable proxy
-        const proxyUrl = 'https://corsproxy.io/?' + encodeURIComponent(url);
-        const response = await fetch(proxyUrl);
-
-        if (!response.ok) throw new Error('無法取得頁面');
-
-        const html = await response.text();
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(html, 'text/html');
-
-        // Improved name extraction
-        let name = '';
-        const title = doc.querySelector('title');
-        if (title) name = title.textContent.split('-')[0].trim().replace(/OpenRice.*/i, '').trim();
-
-        const h1 = doc.querySelector('h1, .name, .restaurant-name');
-        if (h1 && !name) name = h1.textContent.trim();
-
-        // Improved address extraction
-        let address = '';
-        const possibleAddresses = doc.querySelectorAll('p, div, span');
-        for (let el of possibleAddresses) {
-            const text = el.textContent.trim();
-            if ((text.includes('香港') || text.includes('號') || text.includes('樓')) && text.length > 10) {
-                address = text;
-                break;
-            }
-        }
-
-        if (name) form.name.value = name;
-        if (address) form.location.value = address;
-
-        if (name || address) {
-            showSuccess('已自動填入餐廳名稱和地址！');
-        } else {
-            alert('抓到頁面，但無法自動辨識名稱或地址。\n請手動輸入。');
-        }
-
-    } catch (err) {
-        console.error(err);
-        alert('自動填入失敗。\n\nOpenRice 經常阻擋自動抓取。\n\n建議：手動複製餐廳名稱和地址。');
-    }
-}
     </script>
 </body>
 </html>
