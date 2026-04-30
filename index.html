@@ -1332,48 +1332,83 @@ function filterRatings() {
 
     renderRatingList(list);
 }
-        async function autoFillFromOpenRice() {
+async function autoFillFromOpenRice() {
     const urlInput = document.getElementById('more-info-input');
-    const url = urlInput.value.trim();
+    let url = urlInput.value.trim();
 
-    if (!url || !url.includes('openrice.com')) {
+    if (!url) {
+        alert('請先輸入 OpenRice 連結');
+        return;
+    }
+
+    if (!url.includes('openrice.com')) {
         alert('請輸入有效的 OpenRice 連結');
         return;
     }
 
+    // Add https if missing
+    if (!url.startsWith('http')) url = 'https://' + url;
+
     const form = document.getElementById('to-try-form');
 
     try {
-        showSuccess('正在從 OpenRice 抓取資料...');
+        showSuccess('正在從 OpenRice 抓取資料，請稍候...');
 
-        // Note: This may fail due to CORS. If it does, we can switch to a proxy later.
-        const response = await fetch(url, { mode: 'no-cors' }); // no-cors is limited
-        // Alternative simple approach using a public CORS proxy (for testing only):
-        // const proxyUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(url);
-        // const response = await fetch(proxyUrl);
+        // Use a free CORS proxy
+        const proxyUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(url);
+        const response = await fetch(proxyUrl);
+        
+        if (!response.ok) throw new Error('無法取得頁面');
 
         const html = await response.text();
-
-        // Very basic parsing (OpenRice structure changes often)
         const parser = new DOMParser();
         const doc = parser.parseFromString(html, 'text/html');
 
-        // Try to extract name (adjust selector if needed)
-        const nameEl = doc.querySelector('h1') || doc.querySelector('.restaurant-name') || doc.querySelector('title');
-        const name = nameEl ? nameEl.textContent.trim().replace(/ - OpenRice.*/, '') : '';
+        // Try to extract restaurant name
+        let name = '';
+        const title = doc.querySelector('title');
+        if (title) {
+            name = title.textContent.split('-')[0].trim();
+        }
+        const h1 = doc.querySelector('h1');
+        if (h1 && !name) name = h1.textContent.trim();
 
         // Try to extract address
-        const addressEl = doc.querySelector('.address') || doc.querySelector('[itemprop="address"]') || Array.from(doc.querySelectorAll('p')).find(p => p.textContent.includes('香港'));
-        const address = addressEl ? addressEl.textContent.trim() : '';
-
-        if (name) form.name.value = name;
-        if (address) form.location.value = address;
-
-        showSuccess('已自動填入名稱和地址！');
+        let address = '';
+        const addressSelectors = [
+            '.address', '[itemprop="address"]', '.restaurant-address', 
+            'p:contains("香港")', '.poilocation'
+        ];
         
+        for (let sel of ['.address', '.poilocation', '[itemprop="address"]', 'p']) {
+            const els = doc.querySelectorAll(sel);
+            for (let el of els) {
+                const text = el.textContent.trim();
+                if (text.includes('香港') || text.includes('號') || text.length > 15) {
+                    address = text;
+                    break;
+                }
+            }
+            if (address) break;
+        }
+
+        // Fill the form
+        if (name) {
+            form.name.value = name;
+        }
+        if (address) {
+            form.location.value = address;
+        }
+
+        if (name || address) {
+            showSuccess('已自動填入名稱和地址！');
+        } else {
+            showSuccess('抓到頁面，但無法自動辨識名稱/地址，請手動輸入');
+        }
+
     } catch (err) {
         console.error(err);
-        alert('自動填入失敗（可能因為 OpenRice 阻擋）。請手動輸入。');
+        alert('自動填入失敗（OpenRice 可能阻擋抓取）。\n\n請手動輸入餐廳名稱和地址。');
     }
 }
     </script>
